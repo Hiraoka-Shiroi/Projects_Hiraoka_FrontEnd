@@ -8,9 +8,27 @@ body {
     gap: 10px;
 }
 .item {
-    background-color: #4CAF50;
+    background-color: #adb6ad;
     color: white;
     padding: 20px;
     text-align: center;
     font-size: 30px;
+}
+
+
+.grid-container2 {
+    width: 600px;
+    height: 500px;
+    background-color: #191919;
+    display: grid;
+    grid-template-rows: repeat(2fr, 4fr);
+    gap:15px
+}
+.grid-item {
+    font-size: 30px;
+    text-align: center;
+    background-color: azure;
+    color: black;
+    padding: 20px;
+    grid-template-rows: 1fr 2fr 3fr;
 }
