@@ -1,0 +1,66 @@
+
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  padding: 30px;
+  background: #111;
+  color: white;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.nav {
+  display: flex;
+  gap: 20px;
+}
+
+.nav a {
+  color: white;
+  text-decoration: none;
+}
+
+.hero {
+  display: flex;
+  gap: 20px;
+}
+
+.card {
+  flex: 1;
+  background: #222;
+  padding: 40px 20px;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.container {
+  display: flex;
+  color: black;
+  background-color: #222;
+  padding: 40px 20px;
+  border-radius: 16px;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+}
+
+/*Домашнее задание*/
+#item1 {
+  background-color: aliceblue;
+}
+#item2 {
+  background-color: wheat;
+}
+#item3 {
+  background-color: whitesmoke;
+}
+

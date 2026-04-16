@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Учебный сайт Flexbox</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container nav">
+      <div class="logo">Hiraoka</div>
+
+      <nav class="menu">
+        <a href="#">Главная</a>
+        <a href="#">Услуги</a>
+        <a href="#">О нас</a>
+        <a href="#">Контакты</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-box">
+        <div class="hero-text">
+          <h1>Простой сайт для практики Flexbox</h1>
+          <p>
+            Этот макет сделан специально для новичка. Здесь ты потренируешь
+            расположение блоков, отступы, карточки и выравнивание элементов.
+          </p>
+          <a class="btn" href="#">Начать</a>
+        </div>
+
+        <div class="hero-image">
+          <div class="fake-image">Картинка</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="services">
+      <div class="container">
+        <h2>Что здесь можно потренировать</h2>
+
+        <div class="cards">
+          <div class="card">
+            <h3>Flex по горизонтали</h3>
+            <p>Шапка и главный блок построены через display: flex.</p>
+          </div>
+
+          <div class="card">
+            <h3>Отступы и gap</h3>
+            <p>Ты увидишь, как удобно делать расстояние между блоками.</p>
+          </div>
+
+          <div class="card">
+            <h3>Карточки</h3>
+            <p>Карточки расположены рядом и выглядят как полноценная секция.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="about">
+      <div class="container about-box">
+        <div class="about-text">
+          <h2>О макете</h2>
+          <p>
+            Это не сложный сайт. Здесь нет media, grid и тяжёлых эффектов.
+            Только то, что удобно повторить руками, если ты только начал HTML и CSS.
+          </p>
+        </div>
+
+        <div class="about-list">
+          <div class="info">Простой header</div>
+          <div class="info">Hero-блок</div>
+          <div class="info">3 карточки</div>
+          <div class="info">Footer</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-box">
+      <p>© 2026 Учебный сайт</p>
+      <div class="footer-links">
+        <a href="#">Telegram</a>
+        <a href="#">GitHub</a>
+        <a href="#">Email</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
