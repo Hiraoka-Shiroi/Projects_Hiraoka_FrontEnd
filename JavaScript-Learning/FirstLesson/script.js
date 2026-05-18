@@ -191,3 +191,7 @@ console.log(`Процентная ставка: ${interestRate}`);
 console.log(`Чистая экономия в месяц: ${monthlySavings}`);
 console.log(`За ${months} месяцев накопится: ${totalSavings}`);
 console.log(`С процентами банка: ${withInterest}`);
+
+let a = "hi";
+a = "hello";
+console.log(a); // hello
