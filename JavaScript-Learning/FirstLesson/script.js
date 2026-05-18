@@ -59,7 +59,7 @@ console.log(x / y); // деление
 
 const pi = 3.14;
 let counter = 0;
-let userName = "Анна";
+let UserName = "Анна";
 let MAX_ReTRIES = 5;
 let isLoading = false;
 
