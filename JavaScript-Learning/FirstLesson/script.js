@@ -195,3 +195,6 @@ console.log(`С процентами банка: ${withInterest}`);
 let a = "hi";
 a = "hello";
 console.log(a); // hello
+userName = "Hiraoka";
+
+console.log();
