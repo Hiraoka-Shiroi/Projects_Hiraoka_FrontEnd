@@ -12,10 +12,10 @@ const b = 5;
 
 console.log(a + b); // 105
 
-const a = "10";
-const b = 5;
+const c = "10";
+const d = 5;
 
-console.log(a - b); // 5, Вероятно число не может быть вычтено из строки, поэтому JavaScript пытается преобразовать строку в число.
+console.log(c - d); // 5, Вероятно число не может быть вычтено из строки, поэтому JavaScript пытается преобразовать строку в число.
 
 typeof "Hiraoka"
 typeof 21
