@@ -13,15 +13,15 @@ console.log(city);
 
 const info = "Имя: " + name + ", Возраст: " + age + ", Город: " + city;
 console.log(info);
-let proffesion = "Frontend Developer";
-console.log("Профессия: " + proffesion);
+let profession = "Frontend Developer";
+console.log("Профессия: " + profession);
 
 // Вывод:
 // Имя: Hiraoka, Возраст: 21, Город: Tokyo
 // Профессия: Frontend Developer
 
-let Goal = "Стать профессиональным разработчиком";
-console.log("Цель: " + Goal);
+let goal = "Стать профессиональным разработчиком";
+console.log("Цель: " + goal);
 
 // Вывод:
 // Цель: Стать профессиональным разработчиком
