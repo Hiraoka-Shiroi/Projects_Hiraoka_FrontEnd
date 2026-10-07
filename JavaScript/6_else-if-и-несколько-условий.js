@@ -36,12 +36,20 @@ if (temperature >= 30) {
      console.log("Жарко");
 } else if (temperature >= 20) {
      console.log("Тепло");
+} else if (temperature >= 10) {
+     console.log("Прохладно");
 } else {
      console.log("Холодно");
 }
 
 // Практика 2
-const score = 85;
-if (score >= 90) {
+const rating = 85;
+if (rating >= 90) {
      console.log("Отлично")
-} else
+} else if (rating >= 70) {
+    console.log("Хорошо")
+} else if (rating >= 50) {
+    console.log("Удовлетворительно")
+} else {
+    console.log("Не сдал")
+}
