@@ -1,0 +1,11 @@
+# Frontend Academy
+
+All changes belong inside this project. The sibling `Frontend` directory is strictly read-only. Never format, execute, move, delete or overwrite its files or change its Git state.
+
+Teach in Russian. Preserve lesson numbers from the source files: 1 variables, 2 arithmetic, 3 data types, 4 conditions, 5 logical operators, 6 else if, 7 truthy/falsy, 8 ternary, 9 functions. The user authorized complete, revisitable lessons 1–9. New accounts begin at lesson 1. For Hiraoka, preserve the existing history: lessons 1–8 are historically passed according to the learner; lesson 9 is in progress and its exercises have not been reviewed. Never reset that history merely because early lessons now have full content. File presence is not proof of competence.
+
+When the learner says «продолжаем», read `docs/LEARNING-STATE.md` and any newer supplied progress backup first. Account progress is stored on the running server in SQLite; browser localStorage contains a scoped recovery cache and may contain the old pre-account copy. Neither is automatically written into project documents. Do not assume the source document reflects later edits. Migrate the old copy only through the explicit account registration option; never delete it or invent a password for the learner. Record actual reviews and update the learning state after checking the learner's code. Platform tests never count as the learner's skill evidence.
+
+Do not advance to lesson 10 until practical work for lesson 9 is reviewed. Do not provide exercise solutions before the learner attempts them. Use hints, decomposition, then review. Distinguish correctness from style. Maintain evidence and assessment levels independently of lesson statuses.
+
+Curriculum metadata is not full lesson content. Lessons 1–9 have full material and short guided steps; add later detailed lessons sequentially. Keep content, curriculum, components, state and storage separate. Real account registration, login and progress synchronization are authorized. The user has no hosting yet and requested launch preparation and instructions, not a paid hosting purchase or external deployment. Keep production data in a persistent private directory outside dist; never use the real learner database in tests. Update README and run relevant checks after changes.

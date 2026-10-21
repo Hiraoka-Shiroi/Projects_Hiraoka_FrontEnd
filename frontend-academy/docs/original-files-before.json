@@ -1,0 +1,117 @@
+[
+  {
+    "path": "Сценарий для роликов\\Что такое кодинг_.txt",
+    "sha256": "B5DFF8755F7A6F775F345E8C59F41C3F774AEE5150B5E3F5EF02DBBE44EC75DB",
+    "bytes": 13679
+  },
+  {
+    "path": "JavaScript-Ai-Challenge\\01 Переменные\\script.js",
+    "sha256": "0E2A6D29A4DD2719C97BA329B7E0871DF6ABFFF767E44ED106F84BEE4549A44A",
+    "bytes": 3696
+  },
+  {
+    "path": "JavaScript-Ai-Challenge\\02 Типы данных\\script.js",
+    "sha256": "F9312A50871AA1230828821BB1629FA62D3E2400AEFE6D12D0D9E8D481E9A769",
+    "bytes": 4047
+  },
+  {
+    "path": "JavaScript-Ai-Challenge\\03 Условия\\script.js",
+    "sha256": "C71F53F2504528BD68B991109934980868330300D16D8DB7872A166F8F9B7D80",
+    "bytes": 3936
+  },
+  {
+    "path": "JavaScript-Ai-Challenge\\04 Циклы\\script.js",
+    "sha256": "A1F95F616327A6C3514F8024EE3FCE3A64DC2A01FA6B4D43F06F88CE5862C819",
+    "bytes": 1986
+  },
+  {
+    "path": "JavaScript-Ai-Challenge\\05 Функции\\script.js",
+    "sha256": "CA92DBE1CDEEB7729A99EFC0F34E02F6BECBA2375A2FC98600EA2A867D42B04C",
+    "bytes": 1813
+  },
+  {
+    "path": "JavaScript-Ai-Challenge\\06 Массивы\\script.js",
+    "sha256": "13801FBE543AA1D5E4A5D4EB93F15CD37994DB39DEC65A44D455BD62645088FD",
+    "bytes": 1435
+  },
+  {
+    "path": "JavaScript-Ai-Challenge\\07 Методы массивов\\script.js",
+    "sha256": "83427FE7A80A584A4813416B220E5F6C34B14AB5D1D8122C86E5D1EB0FD558CF",
+    "bytes": 1636
+  },
+  {
+    "path": "JavaScript-Ai-Challenge\\08 Объекты\\script.js",
+    "sha256": "75DB7F4DE678BD3089273CE98763FE9E9784B838C5D3945D11EA23EAA5AF7A40",
+    "bytes": 1450
+  },
+  {
+    "path": "JavaScript-Ai-Challenge\\09 Практика\\script.js",
+    "sha256": "B93234D5738B128035890C5CDA3C6C8E35AE972333FF4595A84CD9EBBA5A3210",
+    "bytes": 1955
+  },
+  {
+    "path": "JavaScript-Ai-Challenge\\Типы данных\\script.js",
+    "sha256": "9B9479AD216259D78ED4BA24DF5498CD44E4466561220FB196E9A8C00ECC208B",
+    "bytes": 449
+  },
+  {
+    "path": "JavaScript\\1_Переменные.js",
+    "sha256": "D653E290A8BEA8A2E598D4E5CF696899F5B0EEDDDBFD09342DD6EA0141D80845",
+    "bytes": 686
+  },
+  {
+    "path": "JavaScript\\2_Арифметика.js",
+    "sha256": "CE20D1E2E33244E85A95487096861C4B85BB20F700B94CD189B79F6BA84F2A89",
+    "bytes": 309
+  },
+  {
+    "path": "JavaScript\\3_Типы-данных.js",
+    "sha256": "7FDE38343B7CDA4B76AAEC44DF2203DEA47D65667BF02764678C7EE32236B40E",
+    "bytes": 897
+  },
+  {
+    "path": "JavaScript\\4_Условия-if-else.js",
+    "sha256": "9EB6E5205F2EF324AB9C59062D939F0DC437D14286EC289D1061CFFCF77D953A",
+    "bytes": 832
+  },
+  {
+    "path": "JavaScript\\5_Логические-операторы.js",
+    "sha256": "313BEF91AC5FC746AC93831680AC0A76BD1E3642BC8671E1173D4F721D959F5F",
+    "bytes": 1425
+  },
+  {
+    "path": "JavaScript\\6_else-if-и-несколько-условий.js",
+    "sha256": "5F6EEB24A0699396A17DE3B6EA75B20ED8F766B5F3A5D8389E9D1832D2EF7A02",
+    "bytes": 1411
+  },
+  {
+    "path": "JavaScript\\7_truthy-и-falsy.js",
+    "sha256": "E31EB48904585FC9344989A3C6EBAE0FC6FDAC91419D23B49358719AB0E94C01",
+    "bytes": 1330
+  },
+  {
+    "path": "JavaScript\\8_тернарный-оператор.js",
+    "sha256": "3899C37A577FD3C59BFB2E4CD46BC7151F787223078A1CFBF61C3847077F85A8",
+    "bytes": 11105
+  },
+  {
+    "path": "JavaScript\\9_Функций.js",
+    "sha256": "A43382BAEF35F3DFC77457D620799D1A13747B99C3E25DB05B0A8252D7235B9D",
+    "bytes": 4924
+  },
+  {
+    "path": "README.md",
+    "sha256": "936EEF919BFE2BB46597AC2F79196582AF024D446521E621C602CA8169A4A9AC",
+    "bytes": 27
+  },
+  {
+    "path": "safe-city-Hackaton\\SafeCity_Atyrau.html",
+    "sha256": "2A89241DBDFDD6AC6B8C5479D5F947647C0922188530CB4170DB67341CA1D8D0",
+    "bytes": 117457
+  },
+  {
+    "path": "safe-city-Hackaton\\SafeCity-Atyrau.pdf",
+    "sha256": "B4323D0D8BD0E1C8C606CEDEE3B506CA807F24A3F4D39D6BFD4A23DE24FD89D0",
+    "bytes": 1941794
+  }
+]

@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SafeCity Atyrau</title>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#F0F4F8;--sur:#fff;--sur2:#F7FAFC;--bdr:#D1DCE8;
+  --navy:#0B1929;--acc:#0077CC;--acc2:#005FA3;--acc-l:#EBF5FF;
+  --grn:#059669;--grn-l:#D1FAE5;--red:#DC2626;--red-l:#FEE2E2;
+  --org:#D97706;--org-l:#FEF3C7;--pur:#7C3AED;--pur-l:#EDE9FE;
+  --txt:#1A2535;--txt2:#4A6280;--txt3:#8BA5BC;
+  --r:12px;--rs:8px;--sh:0 2px 12px rgba(0,0,0,.08);--shm:0 8px 32px rgba(0,0,0,.15);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Golos Text',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden}
+
+/* LOGIN */
+#ls{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0a1628,#0F2137,#162840);z-index:9999}
+.lcard{background:#fff;border-radius:20px;padding:44px 38px;width:420px;box-shadow:0 24px 64px rgba(0,0,0,.5)}
+.llogo{display:flex;align-items:center;gap:14px;margin-bottom:28px;justify-content:center}
+.llogoico{width:50px;height:50px;background:linear-gradient(135deg,#0077CC,#005FA3);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:24px}
+.ag{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+.acard{border:2px solid var(--bdr);border-radius:10px;padding:14px 12px;cursor:pointer;transition:all .18s;text-align:center}
+.acard:hover,.acard.sel{border-color:var(--acc);background:var(--acc-l)}
+.acard .aic{font-size:26px;margin-bottom:5px}
+.acard .anm{font-size:13px;font-weight:700}
+.acard .arl{font-size:11px;color:var(--txt2);margin-top:2px}
+.lfg{margin-bottom:13px}
+.lfl{font-size:12px;font-weight:700;color:var(--txt2);margin-bottom:4px;display:block}
+.lfinput{width:100%;border:1.5px solid var(--bdr);border-radius:8px;padding:10px 13px;font-family:inherit;font-size:14px;color:var(--txt);outline:none;transition:border .15s}
+.lfinput:focus{border-color:var(--acc)}
+.lerr{font-size:12px;color:var(--red);margin-bottom:9px;min-height:16px}
+.lhint{font-size:11px;color:var(--txt3);text-align:center;margin-top:11px}
+.lbtn{width:100%;background:var(--acc);color:#fff;border:none;border-radius:9px;padding:13px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer}
+.lbtn:hover{background:var(--acc2)}
+
+/* APP */
+#app{display:none}
+.hdr{background:#fff;border-bottom:1px solid var(--bdr);height:58px;display:flex;align-items:center;padding:0 18px;position:sticky;top:0;z-index:800;box-shadow:var(--sh)}
+.logo{display:flex;align-items:center;gap:9px}
+.logo-ico{width:32px;height:32px;background:linear-gradient(135deg,#0077CC,#005FA3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px}
+.logo-nm{font-size:16px;font-weight:800;color:var(--navy)}
+.logo-sb{font-size:10px;color:var(--txt2);margin-top:-1px}
+.hnav{display:flex;gap:1px;margin-left:18px;flex:1;overflow-x:auto}
+.nbtn{padding:7px 11px;border:none;background:none;color:var(--txt2);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;border-radius:7px;transition:all .15s;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.nbtn:hover{background:var(--acc-l);color:var(--acc)}
+.nbtn.active{background:var(--acc);color:#fff}
+.hright{margin-left:auto;display:flex;align-items:center;gap:7px}
+.upill{display:flex;align-items:center;gap:6px;background:var(--sur2);border:1px solid var(--bdr);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600}
+.udot{width:7px;height:7px;border-radius:50%;background:var(--grn)}
+.lobtn{background:none;border:1px solid var(--bdr);border-radius:7px;padding:5px 11px;font-size:12px;font-weight:600;color:var(--txt2);cursor:pointer;font-family:inherit}
+.lobtn:hover{border-color:var(--red);color:var(--red)}
+.nbadge{background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:1px 5px;border-radius:20px;margin-left:2px}
+
+/* PAGES */
+.page{display:none;padding:18px;min-height:calc(100vh - 58px)}
+.page.active{display:block}
+.ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.ptitle{font-size:18px;font-weight:900;letter-spacing:-.3px}
+.psub{font-size:11px;color:var(--txt2);margin-top:2px}
+
+/* CARD */
+.card{background:#fff;border:1px solid var(--bdr);border-radius:var(--r);padding:15px;box-shadow:var(--sh)}
+.ctitle{font-size:13px;font-weight:700;color:var(--txt);margin-bottom:10px}
+
+/* STAT */
+.sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:13px}
+.scard{background:#fff;border:1px solid var(--bdr);border-radius:var(--r);padding:13px 15px;box-shadow:var(--sh);border-top:3px solid var(--acc)}
+.scard.r{border-top-color:var(--red)}.scard.g{border-top-color:var(--grn)}.scard.o{border-top-color:var(--org)}
+.slbl{font-size:10px;font-weight:700;color:var(--txt2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.sval{font-size:22px;font-weight:900;letter-spacing:-1px}
+.schg{font-size:11px;margin-top:3px;font-weight:600}
+.cdn{color:var(--grn)}.cup{color:var(--red)}.cne{color:var(--txt2)}
+
+/* TABLE */
+.tw{overflow-x:auto;border:1px solid var(--bdr);border-radius:var(--r)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:var(--sur2);padding:8px 10px;text-align:left;font-weight:700;font-size:11px;color:var(--txt2);border-bottom:1px solid var(--bdr);text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid var(--bdr);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr.click:hover td{background:var(--acc-l);cursor:pointer}
+
+/* BADGE */
+.b{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:20px;font-size:11px;font-weight:700}
+.bb{background:var(--acc-l);color:var(--acc)}.bg{background:var(--grn-l);color:var(--grn)}
+.br{background:var(--red-l);color:var(--red)}.bo{background:var(--org-l);color:var(--org)}
+.bp{background:var(--pur-l);color:var(--pur)}.bgr{background:var(--sur2);color:var(--txt2)}
+
+/* LAYOUT */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px}
+.maplayout{display:grid;grid-template-columns:1fr 280px;gap:13px}
+
+/* FORM */
+.fg{margin-bottom:11px}
+.fl{font-size:12px;font-weight:700;color:var(--txt2);margin-bottom:4px;display:block}
+.fi,.fsel,.fta{width:100%;background:#fff;border:1.5px solid var(--bdr);border-radius:var(--rs);padding:9px 11px;color:var(--txt);font-family:inherit;font-size:13px;outline:none;transition:border .15s}
+.fi:focus,.fsel:focus,.fta:focus{border-color:var(--acc)}
+.fta{resize:vertical;min-height:80px}
+
+/* BUTTONS */
+.btn{padding:7px 14px;border:none;border-radius:var(--rs);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px}
+.bpri{background:var(--acc);color:#fff}.bpri:hover{background:var(--acc2)}
+.bout{background:#fff;border:1.5px solid var(--bdr);color:var(--txt2)}.bout:hover{border-color:var(--acc);color:var(--acc)}
+.bgrn{background:var(--grn);color:#fff}.bgrn:hover{opacity:.9}
+.bred{background:var(--red);color:#fff}.bred:hover{opacity:.9}
+.bsm{padding:5px 10px;font-size:12px}
+.w100{width:100%}
+
+/* MODAL */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center}
+.ov.open{display:flex}
+.modal{background:#fff;border-radius:16px;padding:22px;max-width:660px;width:92%;max-height:88vh;overflow-y:auto;box-shadow:var(--shm)}
+.mhdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+.mttl{font-size:15px;font-weight:800}
+.mcl{background:none;border:none;font-size:20px;cursor:pointer;color:var(--txt2);width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center}
+.mcl:hover{background:var(--bg)}
+
+/* TABS */
+.tabs{display:flex;gap:2px;border-bottom:2px solid var(--bdr);margin-bottom:13px}
+.tab{padding:7px 13px;font-size:13px;font-weight:600;color:var(--txt2);cursor:pointer;border:none;background:none;font-family:inherit;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
+.tab.active,.tab:hover{color:var(--acc);border-bottom-color:var(--acc)}
+
+/* AI CARD */
+.aibox{background:linear-gradient(135deg,#f0f7ff,#e8f4ff);border:1.5px solid #b3d4f0;border-radius:var(--r);padding:13px}
+.airow{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.aiico{width:28px;height:28px;background:linear-gradient(135deg,#6c63ff,#a855f7);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.airec{background:#fff;border-left:3px solid var(--acc);border-radius:0 6px 6px 0;padding:7px 10px;margin-top:5px;font-size:12px}
+.airec.warn{border-color:var(--org)}.airec.danger{border-color:var(--red)}
+
+/* RISK PILLS */
+.rp{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.rm{background:var(--org-l);color:var(--org)}.rh{background:var(--red-l);color:var(--red)}.rl{background:var(--grn-l);color:var(--grn)}
+
+/* CASE ITEM */
+.citem{background:#fff;border:1.5px solid var(--bdr);border-radius:var(--r);padding:11px 13px;margin-bottom:7px;transition:all .15s}
+.citem:hover{border-color:var(--acc);box-shadow:var(--sh)}
+
+/* PROGRESS */
+.ptrack{flex:1;height:5px;background:var(--bdr);border-radius:10px;overflow:hidden}
+.pfill{height:100%;border-radius:10px}
+.pfr{background:var(--red)}.pfo{background:var(--org)}.pfg{background:var(--grn)}
+
+/* UPLOAD */
+.upbox{border:2px dashed var(--bdr);border-radius:var(--r);padding:22px;text-align:center;cursor:pointer;transition:all .18s;background:var(--sur2)}
+.upbox:hover{border-color:var(--acc);background:var(--acc-l)}
+
+/* SPINNER */
+.spin{width:14px;height:14px;border:2px solid var(--bdr);border-top-color:var(--acc);border-radius:50%;animation:sp .7s linear infinite;display:inline-block}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* LEGEND */
+.leg{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--txt2);margin-bottom:5px}
+.ldot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+
+/* HOT SPOT ROW */
+.hrow{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bdr);font-size:12px}
+.hrow:last-child{border:none}
+
+/* INFO GRID */
+.igrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:10px}
+.ilbl{font-size:10px;font-weight:700;color:var(--txt2);text-transform:uppercase;margin-bottom:2px}
+.ival{font-size:13px;font-weight:600}
+
+/* UTILS */
+.flex{display:flex}.ac{align-items:center}.jb{justify-content:space-between}
+.g6{gap:6px}.g8{gap:8px}.g12{gap:12px}
+.mb8{margin-bottom:8px}.mb10{margin-bottom:10px}.mb12{margin-bottom:12px}.mb14{margin-bottom:14px}
+.t2{color:var(--txt2)}.t3{color:var(--txt3)}.fw7{font-weight:700}
+.mono{font-family:'JetBrains Mono',monospace}.f12{font-size:12px}.f11{font-size:11px}
+.ra{color:#fff;background:var(--acc);padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700}
+.re{color:#fff;background:var(--grn);padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700}
+
+/* CHART WRAPPERS */
+.cw{position:relative;height:190px}
+
+/* CAMERA */
+#cam-map{height:480px;border-radius:var(--r);border:1px solid var(--bdr)}
+.camico{background:rgba(0,0,0,.75);color:#fff;border-radius:9px;padding:5px 9px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:5px;border:2px solid rgba(255,255,255,.9);white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.tileBtn{padding:6px 13px;border:1.5px solid var(--bdr);border-radius:7px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;background:#fff;color:var(--txt2);transition:all .15s}
+.tileBtn.active{background:var(--acc);color:#fff;border-color:var(--acc)}
+.camstrm{width:100%;aspect-ratio:16/9;background:#111;border-radius:10px;overflow:hidden}
+.camstrm iframe{width:100%;height:100%;border:none}
+.camrow{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--bdr)}
+.camrow:last-child{border:none}
+.ondot{width:7px;height:7px;border-radius:50%;background:var(--grn);display:inline-block;margin-right:4px}
+.offdot{width:7px;height:7px;border-radius:50%;background:var(--red);display:inline-block;margin-right:4px}
+.dcrow{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-radius:8px;background:var(--sur2);border:1px solid var(--bdr);margin-bottom:6px;cursor:pointer;transition:all .15s}
+.dcrow:hover{border-color:var(--acc);background:var(--acc-l)}
+
+/* MAP DISTRICT LABEL */
+.dlabel{background:rgba(255,255,255,.82);border:none;border-radius:4px;padding:2px 5px;font-size:10px;font-weight:700;color:#333}
+
+/* MAP PIN */
+#crime-map{height:490px;width:100%;border-radius:var(--r);border:1px solid var(--bdr)}
+.pinHint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(0,119,204,.92);color:#fff;padding:8px 16px;border-radius:20px;font-size:12px;font-weight:700;pointer-events:none;z-index:600;white-space:nowrap;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+
+/* TOAST */
+#toasttray{position:fixed;top:66px;right:16px;z-index:9000;display:flex;flex-direction:column;gap:8px;pointer-events:none;width:360px}
+.toast{background:#fff;border-radius:12px;padding:13px 15px;box-shadow:0 4px 20px rgba(0,0,0,.18);border-left:4px solid var(--red);pointer-events:all;animation:sIn .35s ease;display:flex;gap:10px;align-items:flex-start}
+.toast.warn{border-color:var(--org)}
+@keyframes sIn{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes sOut{from{transform:translateX(0);opacity:1}to{transform:translateX(110%);opacity:0}}
+.t-ico{font-size:22px;flex-shrink:0;margin-top:1px}
+.t-body{flex:1}
+.t-title{font-size:13px;font-weight:800;color:var(--txt);margin-bottom:3px}
+.t-msg{font-size:12px;color:var(--txt2);line-height:1.5}
+.t-time{font-size:10px;color:var(--txt3);margin-top:4px}
+.t-cl{background:none;border:none;cursor:pointer;font-size:16px;color:var(--txt3);padding:0;margin-top:-2px;flex-shrink:0}
+.t-act{margin-top:7px;display:flex;gap:6px;flex-wrap:wrap}
+.tbtn{padding:4px 10px;border:none;border-radius:6px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer}
+.tbr{background:var(--red);color:#fff}.tba{background:var(--acc);color:#fff}.tbg{background:#f0f0f0;color:var(--txt2)}
+
+/* AI alert panel */
+.aiAlert{background:linear-gradient(135deg,#1a0a0a,#2d1010);border:1.5px solid #7f1d1d;border-radius:var(--r);padding:14px;position:relative;overflow:hidden}
+.aiAlert::before{content:'LIVE';position:absolute;top:10px;right:12px;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* AI log */
+.aiLogItem{padding:7px;border-radius:7px;margin-bottom:5px;border:1px solid}
+</style>
+</head>
+<body>
+
+<div id="toasttray"></div>
+
+<!-- LOGIN -->
+<div id="ls">
+  <div class="lcard">
+    <div class="llogo">
+      <div class="llogoico">&#128737;</div>
+      <div>
+        <div style="font-size:21px;font-weight:900;color:var(--navy)">SafeCity Atyrau</div>
+        <div style="font-size:11px;color:var(--txt2)">&#1040;&#1085;&#1072;&#1083;&#1080;&#1090;&#1080;&#1095;&#1077;&#1089;&#1082;&#1072;&#1103; &#1087;&#1083;&#1072;&#1090;&#1092;&#1086;&#1088;&#1084;&#1072; &#1073;&#1077;&#1079;&#1086;&#1087;&#1072;&#1089;&#1085;&#1086;&#1089;&#1090;&#1080;</div>
+      </div>
+    </div>
+    <div style="font-size:14px;font-weight:700;margin-bottom:13px">&#1042;&#1099;&#1073;&#1077;&#1088;&#1080;&#1090;&#1077; &#1088;&#1086;&#1083;&#1100;</div>
+    <div class="ag">
+      <div class="acard sel" id="aa" onclick="selR('admin')">
+        <div class="aic">&#128084;</div>
+        <div class="anm">&#1040;&#1076;&#1084;&#1080;&#1085;&#1080;&#1089;&#1090;&#1088;&#1072;&#1090;&#1086;&#1088;</div>
+        <div class="arl">&#1055;&#1088;&#1086;&#1082;&#1091;&#1088;&#1086;&#1088; / &#1056;&#1091;&#1082;&#1086;&#1074;&#1086;&#1076;&#1080;&#1090;&#1077;&#1083;&#1100;</div>
+      </div>
+      <div class="acard" id="ae" onclick="selR('employee')">
+        <div class="aic">&#128110;</div>
+        <div class="anm">&#1057;&#1086;&#1090;&#1088;&#1091;&#1076;&#1085;&#1080;&#1082;</div>
+        <div class="arl">&#1057;&#1083;&#1077;&#1076;&#1086;&#1074;&#1072;&#1090;&#1077;&#1083;&#1100; / &#1048;&#1085;&#1089;&#1087;&#1077;&#1082;&#1090;&#1086;&#1088;</div>
+      </div>
+    </div>
+    <div class="lfg">
+      <label class="lfl">&#1051;&#1086;&#1075;&#1080;&#1085;</label>
+      <input class="lfinput" id="lu" value="admin" autocomplete="username">
+    </div>
+    <div class="lfg">
+      <label class="lfl">&#1055;&#1072;&#1088;&#1086;&#1083;&#1100;</label>
+      <input class="lfinput" type="password" id="lp" value="admin123" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="lerr" id="lerr"></div>
+    <button class="lbtn" onclick="doLogin()">&#1042;&#1086;&#1081;&#1090;&#1080; &#1074; &#1089;&#1080;&#1089;&#1090;&#1077;&#1084;&#1091;</button>
+    <div class="lhint">admin / admin123 &nbsp;&#183;&nbsp; sotrudnik / sotrud123</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header class="hdr">
+    <div class="logo">
+      <div class="logo-ico">&#128737;</div>
+      <div><div class="logo-nm">SafeCity Atyrau</div><div class="logo-sb">&#1040;&#1085;&#1072;&#1083;&#1080;&#1090;&#1080;&#1095;&#1077;&#1089;&#1082;&#1072;&#1103; &#1087;&#1083;&#1072;&#1090;&#1092;&#1086;&#1088;&#1084;&#1072;</div></div>
+    </div>
+    <nav class="hnav" id="mainnav"></nav>
+    <div class="hright">
+      <div class="upill"><div class="udot"></div><span id="uname"></span><span id="urole"></span></div>
+      <button class="lobtn" onclick="doLogout()">&#1042;&#1099;&#1081;&#1090;&#1080;</button>
+    </div>
+  </header>
+
+  <!-- DASHBOARD -->
+  <div id="p-dashboard" class="page">
+    <div class="ph">
+      <div><div class="ptitle">&#128202; &#1054;&#1087;&#1077;&#1088;&#1072;&#1090;&#1080;&#1074;&#1085;&#1099;&#1081; &#1076;&#1072;&#1096;&#1073;&#1086;&#1088;&#1076;</div><div class="psub">&#1040;&#1090;&#1099;&#1088;&#1072;&#1091;&#1089;&#1082;&#1072;&#1103; &#1086;&#1073;&#1083;&#1072;&#1089;&#1090;&#1100; &middot; 18 &#1076;&#1077;&#1082;&#1072;&#1073;&#1088;&#1103; 2025 &#1075;.</div></div>
+      <div class="flex g8"><button class="btn bout" onclick="gp('map')">&#128506; &#1050;&#1072;&#1088;&#1090;&#1072;</button><button class="btn bpri" onclick="gp('reports')">&#128196; &#1054;&#1090;&#1095;&#1105;&#1090;&#1099;</button></div>
+    </div>
+    <div class="sgrid">
+      <div class="scard"><div class="slbl">&#1042;&#1089;&#1077;&#1075;&#1086; &#1088;&#1072;&#1089;&#1089;&#1083;&#1077;&#1076;&#1086;&#1074;&#1072;&#1085;&#1080;&#1081;</div><div class="sval" style="color:var(--acc)">11</div><div class="schg cdn">&#9660; 59.3% &#1082; 2024 (27)</div></div>
+      <div class="scard r"><div class="slbl">&#1055;&#1086; &#1087;&#1088;&#1077;&#1089;&#1090;&#1091;&#1087;&#1083;&#1077;&#1085;&#1080;&#1103;&#1084;</div><div class="sval" style="color:var(--red)">8</div><div class="schg cdn">&#9660; 68% &#1082; 2024 (25)</div></div>
+      <div class="scard o"><div class="slbl">&#1059;&#1097;&#1077;&#1088;&#1073; (&#1084;&#1086;&#1096;&#1077;&#1085;&#1085;&#1080;&#1095;&#1077;&#1089;&#1090;&#1074;&#1086;)</div><div class="sval" style="color:var(--org)">84M тг</div><div class="schg cup">&#9650; &#1082;&#1088;&#1080;&#1090;&#1080;&#1095;&#1077;&#1089;&#1082;&#1080;&#1081; &#1088;&#1086;&#1089;&#1090;</div></div>
+      <div class="scard g"><div class="slbl">&#1058;&#1103;&#1078;&#1082;&#1080;&#1077; / &#1086;&#1089;&#1086;&#1073;&#1086; &#1090;&#1103;&#1078;&#1082;&#1080;&#1077;</div><div class="sval" style="color:var(--grn)">3</div><div class="schg cdn">&#9660; 50% &#1082; 2024 (6)</div></div>
+    </div>
+    <div class="two mb14">
+      <div class="card"><div class="ctitle">&#128202; &#1057;&#1090;&#1088;&#1091;&#1082;&#1090;&#1091;&#1088;&#1072; &#1087;&#1086; &#1074;&#1080;&#1076;&#1072;&#1084;</div><div class="cw"><canvas id="cTypes"></canvas></div></div>
+      <div class="card"><div class="ctitle">&#128200; &#1044;&#1080;&#1085;&#1072;&#1084;&#1080;&#1082;&#1072; (&#1072;&#1074;&#1075;-&#1076;&#1077;&#1082;)</div><div class="cw"><canvas id="cTrend"></canvas></div></div>
+    </div>
+    <div class="card">
+      <div class="flex ac jb mb10"><div class="ctitle" style="margin:0">&#128203; &#1047;&#1072;&#1088;&#1077;&#1075;&#1080;&#1089;&#1090;&#1088;&#1080;&#1088;&#1086;&#1074;&#1072;&#1085;&#1085;&#1099;&#1077; &#1076;&#1077;&#1083;&#1072; &middot; 18.12.2025</div><button class="btn bout bsm" onclick="gp('reports')">&#1048;&#1048;-&#1072;&#1085;&#1072;&#1083;&#1080;&#1079; &#8594;</button></div>
+      <div class="tw"><table><thead><tr><th>#</th><th>&#1056;&#1072;&#1081;&#1086;&#1085;</th><th>&#1057;&#1090;&#1072;&#1090;&#1100;&#1103;</th><th>&#1044;&#1077;&#1083;&#1086;</th><th>&#1055;&#1086;&#1090;&#1077;&#1088;&#1087;&#1077;&#1074;&#1096;&#1080;&#1081;</th><th>&#1044;&#1072;&#1090;&#1072;</th><th>&#1058;&#1103;&#1078;&#1077;&#1089;&#1090;&#1100;</th><th></th></tr></thead><tbody id="ctbody"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- MAP -->
+  <div id="p-map" class="page">
+    <div class="ph">
+      <div><div class="ptitle">&#128506; &#1050;&#1072;&#1088;&#1090;&#1072; &#1087;&#1088;&#1077;&#1089;&#1090;&#1091;&#1087;&#1085;&#1086;&#1089;&#1090;&#1080;</div><div class="psub">&#1053;&#1072;&#1078;&#1084;&#1080;&#1090;&#1077; &#128204; &#1095;&#1090;&#1086;&#1073;&#1099; &#1076;&#1086;&#1073;&#1072;&#1074;&#1080;&#1090;&#1100; &#1079;&#1072;&#1103;&#1074;&#1083;&#1077;&#1085;&#1080;&#1077; &#1087;&#1088;&#1103;&#1084;&#1086; &#1085;&#1072; &#1082;&#1072;&#1088;&#1090;&#1077;</div></div>
+      <div class="flex g8" style="flex-wrap:wrap">
+        <select class="fi" id="mf" style="width:auto" onchange="applyFilter()">
+          <option value="all">&#1042;&#1089;&#1077; &#1090;&#1080;&#1087;&#1099;</option>
+          <option value="fraud">&#1052;&#1086;&#1096;&#1077;&#1085;&#1085;&#1080;&#1095;&#1077;&#1089;&#1090;&#1074;&#1086;</option>
+          <option value="theft">&#1050;&#1088;&#1072;&#1078;&#1080;</option>
+          <option value="violence">&#1053;&#1072;&#1089;&#1080;&#1083;&#1080;&#1077;</option>
+          <option value="traffic">&#1044;&#1058;&#1055;</option>
+          <option value="drugs">&#1053;&#1072;&#1088;&#1082;&#1086;&#1090;&#1080;&#1082;&#1080;</option>
+          <option value="app">&#1047;&#1072;&#1103;&#1074;&#1083;&#1077;&#1085;&#1080;&#1103;</option>
+        </select>
+        <button class="btn bout bsm" id="hbtn" onclick="togHeat()">Тепловая карта</button>
+        <button class="btn bout bsm" id="dbtn" onclick="togDist()">Районы</button>
+        <button class="btn bpri bsm" id="pinbtn" onclick="togPin()">Добавить заявление</button>
+      </div>
+    </div>
+    <div class="maplayout">
+      <div style="position:relative">
+        <div id="crime-map"></div>
+        <div id="pinhint" class="pinHint" style="display:none">&#128204; &#1053;&#1072;&#1078;&#1084;&#1080;&#1090;&#1077; &#1085;&#1072; &#1082;&#1072;&#1088;&#1090;&#1077; &#1095;&#1090;&#1086;&#1073;&#1099; &#1087;&#1086;&#1089;&#1090;&#1072;&#1074;&#1080;&#1090;&#1100; &#1084;&#1077;&#1090;&#1082;&#1091;</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:11px">
+        <div class="card">
+          <div class="ctitle">&#127912; &#1051;&#1077;&#1075;&#1077;&#1085;&#1076;&#1072;</div>
+          <div class="leg"><div class="ldot" style="background:#DC2626"></div>&#1052;&#1086;&#1096;&#1077;&#1085;&#1085;&#1080;&#1095;&#1077;&#1089;&#1090;&#1074;&#1086;</div>
+          <div class="leg"><div class="ldot" style="background:#D97706"></div>&#1050;&#1088;&#1072;&#1078;&#1080;</div>
+          <div class="leg"><div class="ldot" style="background:#7C3AED"></div>&#1053;&#1072;&#1089;&#1080;&#1083;&#1080;&#1077;</div>
+          <div class="leg"><div class="ldot" style="background:#059669"></div>&#1044;&#1058;&#1055;</div>
+          <div class="leg"><div class="ldot" style="background:#0077CC;border:2px solid #fff;box-shadow:0 0 0 2px #0077CC"></div>&#1047;&#1072;&#1103;&#1074;&#1083;&#1077;&#1085;&#1080;&#1103;</div>
+          <div class="leg"><div class="ldot" style="background:#FF4500"></div>&#1052;&#1077;&#1090;&#1082;&#1080; &#1089; &#1082;&#1072;&#1088;&#1090;&#1099;</div>
+          <div style="margin-top:7px;padding:7px;background:var(--acc-l);border-radius:7px;font-size:11px;color:var(--acc)">&#128161; &#1050;&#1085;&#1086;&#1087;&#1082;&#1072; &#171;&#1056;&#1072;&#1081;&#1086;&#1085;&#1099;&#187; &#8212; &#1075;&#1088;&#1072;&#1085;&#1080;&#1094;&#1099; &#1084;&#1080;&#1082;&#1088;&#1086;&#1088;&#1072;&#1081;&#1086;&#1085;&#1086;&#1074;</div>
+        </div>
+        <div class="card"><div class="ctitle">&#128293; &#1055;&#1086; &#1088;&#1072;&#1081;&#1086;&#1085;&#1072;&#1084;</div><div id="hotspot"></div></div>
+        <div class="aibox">
+          <div class="airow"><div class="aiico">&#129302;</div><div style="font-size:13px;font-weight:700;color:var(--navy)">&#1048;&#1048;-&#1087;&#1088;&#1086;&#1075;&#1085;&#1086;&#1079;</div></div>
+          <div class="rp rm mb8">&#9888;&#65039; &#1057;&#1088;&#1077;&#1076;&#1085;&#1080;&#1081; &#1088;&#1080;&#1089;&#1082;</div>
+          <div class="f12 t2 mb8"><strong>&#1075;. &#1040;&#1090;&#1099;&#1088;&#1072;&#1091;</strong> &#8212; 7 &#1080;&#1079; 11 &#1076;&#1077;&#1083; (64%).</div>
+          <div class="airec">&#128247; &#1064;&#1082;&#1086;&#1083;&#1072; &#8470;22, &#1091;&#1083;. &#1052;.&#1040;&#1091;&#1101;&#1079;&#1086;&#1074;&#1072; &#8212; &#1091;&#1089;&#1080;&#1083;&#1080;&#1090;&#1100; &#1074;&#1080;&#1076;&#1077;&#1086;&#1085;&#1072;&#1073;&#1083;&#1102;&#1076;&#1077;&#1085;&#1080;&#1077;</div>
+          <div class="airec warn">&#9888;&#65039; &#1046;&#1099;&#1083;&#1099;&#1086;&#1081; &#8212; 2 &#1076;&#1077;&#1083;&#1072; &#1079;&#1072; &#1089;&#1091;&#1090;&#1082;&#1080;</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAMERAS -->
+  <div id="p-cameras" class="page">
+    <div class="ph">
+      <div><div class="ptitle">&#128249; &#1042;&#1080;&#1076;&#1077;&#1086;&#1085;&#1072;&#1073;&#1083;&#1102;&#1076;&#1077;&#1085;&#1080;&#1077;</div><div class="psub">&#1048;&#1048;-&#1084;&#1086;&#1085;&#1080;&#1090;&#1086;&#1088;&#1080;&#1085;&#1075; &middot; 60 &#1082;&#1072;&#1084;&#1077;&#1088; &middot; 12 &#1088;&#1072;&#1081;&#1086;&#1085;&#1086;&#1074; &middot; &#1072;&#1074;&#1090;&#1086;&#1091;&#1074;&#1077;&#1076;&#1086;&#1084;&#1083;&#1077;&#1085;&#1080;&#1103; &#1086;&#1073; &#1091;&#1075;&#1088;&#1086;&#1079;&#1072;&#1093;</div></div>
+      <div class="flex g8" style="flex-wrap:wrap">
+        <button class="tileBtn active" id="tb-cls" onclick="setTile('classic')">&#128506; &#1050;&#1083;&#1072;&#1089;&#1089;&#1080;&#1082;&#1072;</button>
+        <button class="tileBtn" id="tb-sat" onclick="setTile('satellite')">&#128752; &#1057;&#1087;&#1091;&#1090;&#1085;&#1080;&#1082;</button>
+        <button class="btn" style="background:linear-gradient(135deg,#7C3AED,#a855f7);color:#fff;font-size:12px;padding:6px 13px" onclick="runAISim()">&#129302; &#1058;&#1077;&#1089;&#1090; &#1048;&#1048;-&#1086;&#1073;&#1085;&#1072;&#1088;&#1091;&#1078;&#1077;&#1085;&#1080;&#1103;</button>
+      </div>
+    </div>
+    <div id="aialertpanel" class="aiAlert mb14" style="display:none">
+      <div style="font-size:13px;font-weight:800;color:#fff;margin-bottom:5px">&#128680; &#1048;&#1048; &#1054;&#1041;&#1053;&#1040;&#1056;&#1059;&#1046;&#1048;&#1051; &#1059;&#1043;&#1056;&#1054;&#1047;&#1059;</div>
+      <div style="font-size:12px;color:#fca5a5;line-height:1.6" id="aiAlertMsg"></div>
+    </div>
+    <div class="maplayout">
+      <div>
+        <div id="cam-map"></div>
+        <div class="f11 t2" style="margin-top:5px;text-align:center">&#128249; &#1053;&#1072;&#1078;&#1084;&#1080;&#1090;&#1077; &#1085;&#1072; &#1080;&#1082;&#1086;&#1085;&#1082;&#1091; &#1076;&#1083;&#1103; &#1087;&#1088;&#1086;&#1089;&#1084;&#1086;&#1090;&#1088;&#1072; &#1082;&#1072;&#1084;&#1077;&#1088; &nbsp;&middot;&nbsp; <span style="color:var(--grn);font-weight:700">&#9679; &#1054;&#1085;&#1083;&#1072;&#1081;&#1085;</span> &nbsp;&middot;&nbsp; <span style="color:var(--red);font-weight:700">&#9679; &#1054;&#1092;&#1083;&#1072;&#1081;&#1085;</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;max-height:520px;overflow-y:auto">
+        <div class="card"><div class="ctitle">&#128249; &#1050;&#1072;&#1084;&#1077;&#1088;&#1099; &#1087;&#1086; &#1088;&#1072;&#1081;&#1086;&#1085;&#1072;&#1084;</div><div id="camdistlist"></div></div>
+        <div class="card"><div class="ctitle">&#129302; &#1048;&#1048;-&#1078;&#1091;&#1088;&#1085;&#1072;&#1083;</div><div id="ailog" style="max-height:200px;overflow-y:auto;font-size:12px"><div style="color:var(--txt2);text-align:center;padding:20px">&#1053;&#1077;&#1090; &#1089;&#1086;&#1073;&#1099;&#1090;&#1080;&#1081;</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REPORTS -->
+  <div id="p-reports" class="page">
+    <div class="ph"><div class="ptitle">&#128196; &#1040;&#1085;&#1072;&#1083;&#1080;&#1079; &#1086;&#1090;&#1095;&#1105;&#1090;&#1086;&#1074;</div></div>
+    <div class="tabs">
+      <button class="tab active" id="rtab0" onclick="switchRTab('rtu',this)">Загрузить</button>
+      <button class="tab" id="rtab1" onclick="switchRTab('rtr',this)">Результат</button>
+      <button class="tab" id="rtab2" onclick="switchRTab('rth',this)">История</button>
+    </div>
+    <div id="rtu">
+      <div class="two">
+        <div>
+          <div class="card mb10">
+            <div class="ctitle">&#128193; &#1047;&#1072;&#1075;&#1088;&#1091;&#1079;&#1080;&#1090;&#1100; &#1092;&#1072;&#1081;&#1083; &#1086;&#1090;&#1095;&#1105;&#1090;&#1072;</div>
+            <div class="upbox" onclick="document.getElementById('rfile').click()">
+              <input type="file" id="rfile" accept=".rtf,.pdf,.docx,.txt" style="display:none" onchange="onFileSelect(this)">
+              <div style="font-size:32px;margin-bottom:8px">&#128194;</div>
+              <div style="font-weight:700;margin-bottom:3px">&#1055;&#1077;&#1088;&#1077;&#1090;&#1072;&#1097;&#1080;&#1090;&#1077; &#1092;&#1072;&#1081;&#1083; &#1080;&#1083;&#1080; &#1085;&#1072;&#1078;&#1084;&#1080;&#1090;&#1077;</div>
+              <div class="f12 t2">RTF &middot; PDF &middot; DOCX &middot; TXT</div>
+              <div id="rfname" style="margin-top:6px;font-size:13px;color:var(--grn);font-weight:600"></div>
+            </div>
+            <button class="btn bpri w100" style="margin-top:10px;opacity:.5" id="analyzebtn" onclick="runAnalysis()" disabled>&#129302; &#1040;&#1085;&#1072;&#1083;&#1080;&#1079;&#1080;&#1088;&#1086;&#1074;&#1072;&#1090;&#1100; &#1089; &#1048;&#1048;</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ctitle">&#8505;&#65039; &#1063;&#1090;&#1086; &#1072;&#1085;&#1072;&#1083;&#1080;&#1079;&#1080;&#1088;&#1091;&#1077;&#1090; &#1048;&#1048;</div>
+          <div style="font-size:12px;line-height:1.7;color:var(--txt2)">
+            <div style="padding:8px;background:var(--acc-l);border-radius:7px;margin-bottom:6px"><strong style="color:var(--acc)">&#128200; &#1057;&#1090;&#1072;&#1090;&#1080;&#1089;&#1090;&#1080;&#1082;&#1072;</strong> &#8212; &#1082;&#1086;&#1083;-&#1074;&#1086; &#1076;&#1077;&#1083;, &#1076;&#1080;&#1085;&#1072;&#1084;&#1080;&#1082;&#1072;, &#1089;&#1088;&#1072;&#1074;&#1085;&#1077;&#1085;&#1080;&#1077; &#1089; 2024</div>
+            <div style="padding:8px;background:var(--grn-l);border-radius:7px;margin-bottom:6px"><strong style="color:var(--grn)">&#128269; &#1042;&#1080;&#1076;&#1099; &#1087;&#1088;&#1077;&#1089;&#1090;&#1091;&#1087;&#1083;&#1077;&#1085;&#1080;&#1081;</strong> &#8212; &#1072;&#1085;&#1072;&#1083;&#1080;&#1079; &#1089;&#1090;&#1072;&#1090;&#1077;&#1081; &#1059;&#1050;, &#1090;&#1077;&#1085;&#1076;&#1077;&#1085;&#1094;&#1080;&#1080;</div>
+            <div style="padding:8px;background:var(--org-l);border-radius:7px;margin-bottom:6px"><strong style="color:var(--org)">&#9888;&#65039; &#1047;&#1086;&#1085;&#1099; &#1088;&#1080;&#1089;&#1082;&#1072;</strong> &#8212; &#1087;&#1088;&#1086;&#1073;&#1083;&#1077;&#1084;&#1085;&#1099;&#1077; &#1088;&#1072;&#1081;&#1086;&#1085;&#1099;, &#1072;&#1085;&#1086;&#1084;&#1072;&#1083;&#1080;&#1080;</div>
+            <div style="padding:8px;background:var(--red-l);border-radius:7px"><strong style="color:var(--red)">&#128161; &#1056;&#1077;&#1082;&#1086;&#1084;&#1077;&#1085;&#1076;&#1072;&#1094;&#1080;&#1080;</strong> &#8212; &#1082;&#1086;&#1085;&#1082;&#1088;&#1077;&#1090;&#1085;&#1099;&#1077; &#1084;&#1077;&#1088;&#1099;</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="rtr" style="display:none">
+      <div id="rtrBody">
+        <div style="text-align:center;padding:60px;color:var(--txt2)">
+          <div style="font-size:48px;margin-bottom:10px">&#128196;</div>
+          <div style="font-weight:700;margin-bottom:5px">&#1047;&#1072;&#1075;&#1088;&#1091;&#1079;&#1080;&#1090;&#1077; &#1092;&#1072;&#1081;&#1083; &#1086;&#1090;&#1095;&#1105;&#1090;&#1072;</div>
+          <div class="f12">&#1056;&#1077;&#1079;&#1091;&#1083;&#1100;&#1090;&#1072;&#1090; &#1087;&#1086;&#1103;&#1074;&#1080;&#1090;&#1089;&#1103; &#1079;&#1076;&#1077;&#1089;&#1100; &#1087;&#1086;&#1089;&#1083;&#1077; &#1072;&#1085;&#1072;&#1083;&#1080;&#1079;&#1072;</div>
+        </div>
+      </div>
+    </div>
+    <div id="rth" style="display:none">
+      <div class="card">
+        <div class="ctitle">&#128193; &#1048;&#1089;&#1090;&#1086;&#1088;&#1080;&#1103; &#1079;&#1072;&#1075;&#1088;&#1091;&#1078;&#1077;&#1085;&#1085;&#1099;&#1093; &#1086;&#1090;&#1095;&#1105;&#1090;&#1086;&#1074;</div>
+        <div id="histEmpty" style="text-align:center;padding:40px;color:var(--txt2)">
+          <div style="font-size:36px;margin-bottom:8px">&#128194;</div>
+          <div style="font-weight:600;margin-bottom:4px">&#1048;&#1089;&#1090;&#1086;&#1088;&#1080;&#1103; &#1087;&#1091;&#1089;&#1090;&#1072;</div>
+          <div class="f12">&#1047;&#1076;&#1077;&#1089;&#1100; &#1087;&#1086;&#1103;&#1074;&#1103;&#1090;&#1089;&#1103; &#1086;&#1090;&#1095;&#1105;&#1090;&#1099; &#1087;&#1086;&#1089;&#1083;&#1077; &#1080;&#1093; &#1079;&#1072;&#1075;&#1088;&#1091;&#1079;&#1082;&#1080;</div>
+        </div>
+        <div id="histTable" style="display:none">
+          <div class="tw">
+            <table>
+              <thead><tr><th>&#1044;&#1072;&#1090;&#1072; &#1072;&#1085;&#1072;&#1083;&#1080;&#1079;&#1072;</th><th>&#1060;&#1072;&#1081;&#1083;</th><th>&#1044;&#1077;&#1083;</th><th>&#1056;&#1080;&#1089;&#1082;</th><th></th></tr></thead>
+              <tbody id="histTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPLICATIONS -->
+  <div id="p-applications" class="page">
+    <div class="ph"><div class="ptitle">&#128221; &#1047;&#1072;&#1103;&#1074;&#1083;&#1077;&#1085;&#1080;&#1103;</div><button class="btn bpri" onclick="showNewApp()">+ &#1053;&#1086;&#1074;&#1086;&#1077; &#1079;&#1072;&#1103;&#1074;&#1083;&#1077;&#1085;&#1080;&#1077;</button></div>
+    <div class="tabs">
+      <button class="tab active" id="atab0" onclick="switchATab('atlist',this)">Все заявления</button>
+      <button class="tab" id="atab1" onclick="switchATab('atnew',this)">Подать заявление</button>
+    </div>
+    <div id="atlist"><div id="appsContainer"></div></div>
+    <div id="atnew" style="display:none">
+      <div class="two">
+        <div class="card">
+          <div class="ctitle">&#128221; &#1060;&#1086;&#1088;&#1084;&#1072; &#1079;&#1072;&#1103;&#1074;&#1083;&#1077;&#1085;&#1080;&#1103;</div>
+          <div class="fg"><label class="fl">&#1058;&#1080;&#1087; &#1087;&#1088;&#1086;&#1080;&#1089;&#1096;&#1077;&#1089;&#1090;&#1074;&#1080;&#1103;</label>
+            <select class="fsel" id="ftype">
+              <option value="fraud">&#1052;&#1086;&#1096;&#1077;&#1085;&#1085;&#1080;&#1095;&#1077;&#1089;&#1090;&#1074;&#1086;</option>
+              <option value="theft">&#1050;&#1088;&#1072;&#1078;&#1072;</option>
+              <option value="violence">&#1053;&#1072;&#1089;&#1080;&#1083;&#1080;&#1077; / &#1055;&#1086;&#1073;&#1086;&#1080;</option>
+              <option value="traffic">&#1044;&#1058;&#1055;</option>
+              <option value="drugs">&#1053;&#1072;&#1088;&#1082;&#1086;&#1090;&#1080;&#1082;&#1080;</option>
+              <option value="other">&#1055;&#1088;&#1086;&#1095;&#1077;&#1077;</option>
+            </select>
+          </div>
+          <div class="fg"><label class="fl">&#1052;&#1080;&#1082;&#1088;&#1086;&#1088;&#1072;&#1081;&#1086;&#1085; / &#1056;&#1072;&#1081;&#1086;&#1085;</label>
+            <select class="fsel" id="fdistrict">
+              <optgroup label="&#8212; &#1040;&#1090;&#1099;&#1088;&#1072;&#1091; (&#1083;&#1077;&#1074;&#1099;&#1081; &#1073;&#1077;&#1088;&#1077;&#1075;) &#8212;">
+                <option>&#1062;&#1077;&#1085;&#1090;&#1088; (&#1040;&#1090;&#1099;&#1088;&#1072;&#1091;)</option>
+                <option>&#1040;&#1074;&#1072;&#1085;&#1075;&#1072;&#1088;&#1076; &#1084;&#1082;&#1088;. (&#1040;&#1090;&#1099;&#1088;&#1072;&#1091;)</option>
+                <option>&#1057;&#1072;&#1088;&#1099;&#1082;&#1072;&#1084;&#1099;&#1089; &#1084;&#1082;&#1088;. (&#1040;&#1090;&#1099;&#1088;&#1072;&#1091;)</option>
+                <option>&#1046;&#1091;&#1084;&#1099;&#1089;&#1082;&#1077;&#1088; &#1084;&#1082;&#1088;. (&#1040;&#1090;&#1099;&#1088;&#1072;&#1091;)</option>
+                <option>&#1040;&#1079;&#1072;&#1090;&#1090;&#1099;&#1082; &#1084;&#1082;&#1088;. (&#1040;&#1090;&#1099;&#1088;&#1072;&#1091;)</option>
+                <option>&#1041;&#1072;&#1083;&#1072;&#1091;&#1089;&#1072; &#1084;&#1082;&#1088;. (&#1040;&#1090;&#1099;&#1088;&#1072;&#1091;)</option>
+                <option>&#1057;&#1072;&#1084;&#1072;&#1083; &#1084;&#1082;&#1088;. (&#1040;&#1090;&#1099;&#1088;&#1072;&#1091;)</option>
+                <option>&#1053;&#1091;&#1088;&#1089;&#1072;&#1103; &#1084;&#1082;&#1088;. (&#1040;&#1090;&#1099;&#1088;&#1072;&#1091;)</option>
+                <option>&#1053;&#1091;&#1088;-&#1043;&#1080;&#1089;&#1072; &#1084;&#1082;&#1088;. (&#1040;&#1090;&#1099;&#1088;&#1072;&#1091;)</option>
+                <option>&#1046;&#1072;&#1081;&#1099;&#1082; &#1084;&#1082;&#1088;. (&#1040;&#1090;&#1099;&#1088;&#1072;&#1091;)</option>
+              </optgroup>
+              <optgroup label="&#8212; &#1041;&#1072;&#1083;&#1099;&#1082;&#1096;&#1080; (&#1087;&#1088;&#1072;&#1074;&#1099;&#1081; &#1073;&#1077;&#1088;&#1077;&#1075;) &#8212;">
+                <option>&#1041;&#1072;&#1083;&#1099;&#1082;&#1096;&#1080; &#1084;&#1082;&#1088;. (&#1040;&#1090;&#1099;&#1088;&#1072;&#1091;)</option>
+                <option>&#1056;&#1072;&#1082;&#1091;&#1096;&#1072; &#1084;&#1082;&#1088;. (&#1040;&#1090;&#1099;&#1088;&#1072;&#1091;)</option>
+                <option>&#1055;&#1088;&#1080;&#1074;&#1086;&#1082;&#1079;&#1072;&#1083;&#1100;&#1085;&#1099;&#1081; &#1084;&#1082;&#1088;. (&#1040;&#1090;&#1099;&#1088;&#1072;&#1091;)</option>
+              </optgroup>
+              <optgroup label="&#8212; &#1056;&#1072;&#1081;&#1086;&#1085;&#1099; &#1086;&#1073;&#1083;&#1072;&#1089;&#1090;&#1080; &#8212;">
+                <option>&#1046;&#1099;&#1083;&#1099;&#1086;&#1081;&#1089;&#1082;&#1080;&#1081; &#1088;&#1072;&#1081;&#1086;&#1085; (&#1075;.&#1050;&#1091;&#1083;&#1100;&#1089;&#1072;&#1088;&#1099;)</option>
+                <option>&#1052;&#1072;&#1082;&#1072;&#1090;&#1089;&#1082;&#1080;&#1081; &#1088;&#1072;&#1081;&#1086;&#1085;</option>
+                <option>&#1050;&#1079;&#1099;&#1083;&#1082;&#1086;&#1075;&#1080;&#1085;&#1089;&#1082;&#1080;&#1081; &#1088;&#1072;&#1081;&#1086;&#1085;</option>
+                <option>&#1048;&#1085;&#1076;&#1077;&#1088;&#1089;&#1082;&#1080;&#1081; &#1088;&#1072;&#1081;&#1086;&#1085;</option>
+                <option>&#1050;&#1091;&#1088;&#1084;&#1072;&#1085;&#1075;&#1072;&#1079;&#1080;&#1085;&#1089;&#1082;&#1080;&#1081; &#1088;&#1072;&#1081;&#1086;&#1085;</option>
+                <option>&#1052;&#1072;&#1093;&#1072;&#1084;&#1073;&#1077;&#1090;&#1089;&#1082;&#1080;&#1081; &#1088;&#1072;&#1081;&#1086;&#1085;</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="fg"><label class="fl">&#1058;&#1086;&#1095;&#1085;&#1099;&#1081; &#1072;&#1076;&#1088;&#1077;&#1089;</label><input class="fi" id="faddr" placeholder="&#1091;&#1083;. &#1040;&#1079;&#1072;&#1090;&#1090;&#1099;&#1082; 12, &#1082;&#1074;. 5"><div class="f11 t3" style="margin-top:3px">&#128161; &#1048;&#1083;&#1080; &#1085;&#1072;&#1078;&#1084;&#1080;&#1090;&#1077; &#171;&#128204; &#1059;&#1082;&#1072;&#1079;&#1072;&#1090;&#1100; &#1085;&#1072; &#1082;&#1072;&#1088;&#1090;&#1077;&#187;</div></div>
+          <div class="fg"><label class="fl">&#1057;&#1090;&#1072;&#1090;&#1100;&#1103; &#1059;&#1050; &#1056;&#1050;</label><input class="fi" id="flaw" placeholder="&#1089;&#1090;.188 &#1095;.1 &#1059;&#1050; &#1056;&#1050; &#8212; &#1050;&#1088;&#1072;&#1078;&#1072;"></div>
+          <div class="fg"><label class="fl">&#1054;&#1087;&#1080;&#1089;&#1072;&#1085;&#1080;&#1077;</label><textarea class="fta" id="fdesc" placeholder="&#1050;&#1086;&#1075;&#1076;&#1072;, &#1095;&#1090;&#1086; &#1087;&#1088;&#1086;&#1080;&#1079;&#1086;&#1096;&#1083;&#1086;, &#1086;&#1095;&#1077;&#1074;&#1080;&#1076;&#1094;&#1099;, &#1091;&#1097;&#1077;&#1088;&#1073;..."></textarea></div>
+          <div class="flex g8" style="flex-wrap:wrap">
+            <button class="btn bpri" style="flex:1" onclick="submitApp()">&#128228; &#1054;&#1090;&#1087;&#1088;&#1072;&#1074;&#1080;&#1090;&#1100;</button>
+            <button class="btn bout" onclick="gotoMapPin()">&#128204; &#1053;&#1072; &#1082;&#1072;&#1088;&#1090;&#1077;</button>
+          </div>
+        </div>
+        <div>
+          <div class="card mb10">
+            <div class="ctitle">&#8505;&#65039; &#1048;&#1085;&#1089;&#1090;&#1088;&#1091;&#1082;&#1094;&#1080;&#1103;</div>
+            <ol style="font-size:12px;color:var(--txt2);line-height:1.9;padding-left:14px">
+              <li>&#1042;&#1099;&#1073;&#1077;&#1088;&#1080;&#1090;&#1077; &#1090;&#1080;&#1087; &#1087;&#1088;&#1086;&#1080;&#1089;&#1096;&#1077;&#1089;&#1090;&#1074;&#1080;&#1103;</li>
+              <li>&#1059;&#1082;&#1072;&#1079;&#1072;&#1085;&#1080;&#1077; &#1072;&#1076;&#1088;&#1077;&#1089;&#1072; &#1080;&#1083;&#1080; &#171;&#128204; &#1053;&#1072; &#1082;&#1072;&#1088;&#1090;&#1077;&#187;</li>
+              <li>&#1054;&#1087;&#1080;&#1096;&#1080;&#1090;&#1077; &#1089;&#1086;&#1073;&#1099;&#1090;&#1080;&#1077;</li>
+              <li>&#1053;&#1072;&#1078;&#1084;&#1080;&#1090;&#1077; &#171;&#1054;&#1090;&#1087;&#1088;&#1072;&#1074;&#1080;&#1090;&#1100;&#187;</li>
+            </ol>
+            <div style="margin-top:9px;padding:8px;background:var(--org-l);border-radius:7px;font-size:12px;color:var(--org);font-weight:600">&#8987; &#1056;&#1072;&#1089;&#1089;&#1084;&#1086;&#1090;&#1088;&#1077;&#1085;&#1080;&#1077;: &#1076;&#1086; 3 &#1088;&#1072;&#1073;&#1086;&#1095;&#1080;&#1093; &#1076;&#1085;&#1077;&#1081;</div>
+          </div>
+          <div class="aibox"><div class="airow"><div class="aiico">&#129302;</div><div style="font-size:13px;font-weight:700;color:var(--navy)">&#1063;&#1090;&#1086; &#1076;&#1077;&#1083;&#1072;&#1077;&#1090; &#1048;&#1048;</div></div><div style="font-size:12px;color:var(--txt2)">&#8226; &#1043;&#1077;&#1086;&#1082;&#1086;&#1076;&#1080;&#1088;&#1091;&#1077;&#1090; &#1072;&#1076;&#1088;&#1077;&#1089; &#8594; &#1090;&#1086;&#1095;&#1082;&#1072; &#1085;&#1072; &#1082;&#1072;&#1088;&#1090;&#1091;<br>&#8226; &#1059;&#1074;&#1077;&#1076;&#1086;&#1084;&#1083;&#1103;&#1077;&#1090; &#1072;&#1076;&#1084;&#1080;&#1085;&#1080;&#1089;&#1090;&#1088;&#1072;&#1090;&#1086;&#1088;&#1072;<br>&#8226; &#1055;&#1088;&#1086;&#1074;&#1077;&#1088;&#1103;&#1077;&#1090; &#1087;&#1086;&#1093;&#1086;&#1078;&#1080;&#1077; &#1076;&#1077;&#1083;&#1072; &#1079;&#1072; 30 &#1076;&#1085;&#1077;&#1081;</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI -->
+  <div id="p-ai" class="page">
+    <div class="ph"><div class="ptitle">&#129302; &#1048;&#1048;-&#1088;&#1077;&#1082;&#1086;&#1084;&#1077;&#1085;&#1076;&#1072;&#1094;&#1080;&#1080;</div><button class="btn bout" onclick="renderAIRecs()">&#128260; &#1054;&#1073;&#1085;&#1086;&#1074;&#1080;&#1090;&#1100;</button></div>
+    <div class="sgrid mb14">
+      <div class="scard"><div class="slbl">&#1048;&#1085;&#1076;&#1077;&#1082;&#1089; &#1073;&#1077;&#1079;&#1086;&#1087;&#1072;&#1089;&#1085;&#1086;&#1089;&#1090;&#1080;</div><div class="sval" style="color:var(--grn)">73</div><div class="schg cdn">&#9650; +12 &#1079;&#1072; &#1084;&#1077;&#1089;&#1103;&#1094;</div></div>
+      <div class="scard r"><div class="slbl">&#1047;&#1086;&#1085; &#1087;&#1086;&#1074;&#1099;&#1096;&#1077;&#1085;&#1085;&#1086;&#1075;&#1086; &#1088;&#1080;&#1089;&#1082;&#1072;</div><div class="sval" style="color:var(--org)">3</div><div class="schg cne">= &#1073;&#1077;&#1079; &#1080;&#1079;&#1084;&#1077;&#1085;&#1077;&#1085;&#1080;&#1081;</div></div>
+      <div class="scard g"><div class="slbl">&#1056;&#1077;&#1082;&#1086;&#1084;&#1077;&#1085;&#1076;&#1072;&#1094;&#1080;&#1081; &#1074;&#1099;&#1087;&#1086;&#1083;&#1085;&#1077;&#1085;&#1086;</div><div class="sval" style="color:var(--acc)">7/12</div><div class="schg cne">58%</div></div>
+      <div class="scard o"><div class="slbl">&#1055;&#1088;&#1086;&#1075;&#1085;&#1086;&#1079; (7 &#1076;&#1085;&#1077;&#1081;)</div><div class="sval" style="color:var(--grn)">&#8600; -15%</div><div class="schg cdn">&#1057;&#1085;&#1080;&#1078;&#1077;&#1085;&#1080;&#1077;</div></div>
+    </div>
+    <div class="two mb14">
+      <div class="card"><div class="ctitle">&#128202; &#1055;&#1088;&#1086;&#1075;&#1085;&#1086;&#1079; &#1087;&#1086; &#1088;&#1072;&#1081;&#1086;&#1085;&#1072;&#1084; (7 &#1076;&#1085;&#1077;&#1081;)</div><div class="cw"><canvas id="cForecast"></canvas></div></div>
+      <div class="card"><div class="ctitle">&#128293; &#1059;&#1103;&#1079;&#1074;&#1080;&#1084;&#1086;&#1089;&#1090;&#1080;</div><div id="vulns"></div></div>
+    </div>
+    <div class="card mb14"><div class="ctitle">&#128161; &#1056;&#1077;&#1082;&#1086;&#1084;&#1077;&#1085;&#1076;&#1072;&#1094;&#1080;&#1080;</div><div id="airecs"></div></div>
+    <div class="card">
+      <div class="ctitle">&#128172; &#1047;&#1072;&#1076;&#1072;&#1090;&#1100; &#1074;&#1086;&#1087;&#1088;&#1086;&#1089; &#1048;&#1048;</div>
+      <div class="flex g8"><input class="fi" id="aiq" placeholder="&#1050;&#1072;&#1082;&#1086;&#1081; &#1088;&#1072;&#1081;&#1086;&#1085; &#1086;&#1087;&#1072;&#1089;&#1085;&#1077;&#1077;? &#1055;&#1088;&#1086;&#1075;&#1085;&#1086;&#1079;? &#1050;&#1072;&#1084;&#1077;&#1088;&#1099;?"><button class="btn bpri" onclick="askAI()" style="white-space:nowrap">&#129302; &#1057;&#1087;&#1088;&#1086;&#1089;&#1080;&#1090;&#1100;</button></div>
+      <div id="aiansDiv" style="display:none;margin-top:10px">
+        <div class="aibox">
+          <div id="aiSpinner" class="flex ac g8 t2 f12"><div class="spin"></div>&#1040;&#1085;&#1072;&#1083;&#1080;&#1079;&#1080;&#1088;&#1091;&#1102;...</div>
+          <div id="aiAnswer" style="display:none;font-size:13px;line-height:1.8"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN -->
+  <div id="p-admin" class="page">
+    <div class="ph"><div><div class="ptitle">&#9881;&#65039; &#1040;&#1076;&#1084;&#1080;&#1085;&#1080;&#1089;&#1090;&#1088;&#1072;&#1090;&#1086;&#1088;</div><div class="psub">&#1059;&#1087;&#1088;&#1072;&#1074;&#1083;&#1077;&#1085;&#1080;&#1077; &#1089;&#1080;&#1089;&#1090;&#1077;&#1084;&#1086;&#1081;</div></div><span class="b bb" style="font-size:12px;padding:5px 13px">&#128084; &#1043;&#1083;&#1072;&#1074;&#1085;&#1099;&#1081; &#1087;&#1088;&#1086;&#1082;&#1091;&#1088;&#1086;&#1088;</span></div>
+    <div class="three mb14">
+      <div class="card" style="text-align:center"><div class="slbl">&#1054;&#1078;&#1080;&#1076;&#1072;&#1102;&#1090; &#1088;&#1072;&#1089;&#1089;&#1084;&#1086;&#1090;&#1088;&#1077;&#1085;&#1080;&#1103;</div><div style="font-size:36px;font-weight:900;color:var(--org);margin:5px 0" id="pendCount">0</div><button class="btn bpri bsm w100" onclick="gp('applications')">&#1047;&#1072;&#1103;&#1074;&#1083;&#1077;&#1085;&#1080;&#1103;</button></div>
+      <div class="card" style="text-align:center"><div class="slbl">&#1042;&#1089;&#1077;&#1075;&#1086; &#1079;&#1072;&#1103;&#1074;&#1083;&#1077;&#1085;&#1080;&#1081;</div><div style="font-size:36px;font-weight:900;color:var(--acc);margin:5px 0" id="totalCount">0</div><button class="btn bout bsm w100" onclick="gp('reports')">&#1054;&#1090;&#1095;&#1105;&#1090;&#1099;</button></div>
+      <div class="card" style="text-align:center"><div class="slbl">&#1044;&#1077;&#1083; &#1079;&#1072; 18.12.2025</div><div style="font-size:36px;font-weight:900;color:var(--grn);margin:5px 0">11</div><button class="btn bout bsm w100" onclick="gp('dashboard')">&#1044;&#1072;&#1096;&#1073;&#1086;&#1088;&#1076;</button></div>
+    </div>
+    <div class="two">
+      <div class="card">
+        <div class="ctitle">&#128101; &#1057;&#1086;&#1090;&#1088;&#1091;&#1076;&#1085;&#1080;&#1082;&#1080;</div>
+        <div class="tw"><table><thead><tr><th>&#1060;&#1048;&#1054;</th><th>&#1056;&#1072;&#1081;&#1086;&#1085;</th><th>&#1047;&#1072;&#1103;&#1074;&#1083;&#1077;&#1085;&#1080;&#1081;</th><th>&#1040;&#1082;&#1090;&#1080;&#1074;&#1085;&#1086;&#1089;&#1090;&#1100;</th><th>&#1057;&#1090;&#1072;&#1090;&#1091;&#1089;</th></tr></thead>
+          <tbody>
+            <tr><td>&#1040;&#1093;&#1084;&#1077;&#1090;&#1086;&#1074; &#1040;.&#1050;.</td><td>&#1046;&#1099;&#1083;&#1099;&#1086;&#1081;</td><td>7</td><td>18.12 16:20</td><td><span class="b bg">&#1054;&#1085;&#1083;&#1072;&#1081;&#1085;</span></td></tr>
+            <tr><td>&#1057;&#1077;&#1081;&#1090;&#1082;&#1072;&#1083;&#1080; &#1041;.&#1052;.</td><td>&#1040;&#1090;&#1099;&#1088;&#1072;&#1091;</td><td>12</td><td>18.12 17:45</td><td><span class="b bg">&#1054;&#1085;&#1083;&#1072;&#1081;&#1085;</span></td></tr>
+            <tr><td>&#1053;&#1091;&#1088;&#1083;&#1072;&#1085;&#1086;&#1074;&#1072; &#1043;.&#1058;.</td><td>&#1052;&#1072;&#1082;&#1072;&#1090;</td><td>4</td><td>17.12 10:30</td><td><span class="b bgr">&#1054;&#1092;&#1083;&#1072;&#1081;&#1085;</span></td></tr>
+            <tr><td id="empName">&#8212;</td><td>&#1040;&#1090;&#1099;&#1088;&#1072;&#1091;</td><td id="empCount">0</td><td>&#1057;&#1077;&#1081;&#1095;&#1072;&#1089;</td><td><span class="b bg">&#1054;&#1085;&#1083;&#1072;&#1081;&#1085;</span></td></tr>
+          </tbody>
+        </table></div>
+      </div>
+      <div class="card"><div class="ctitle">&#128202; &#1057;&#1090;&#1072;&#1090;&#1091;&#1089;&#1099; &#1079;&#1072;&#1103;&#1074;&#1083;&#1077;&#1085;&#1080;&#1081;</div><div class="cw"><canvas id="cApps"></canvas></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="ov" id="caseModal"><div class="modal"><div class="mhdr"><div class="mttl" id="caseModalTitle">&#1044;&#1077;&#1083;&#1086;</div><button class="mcl" onclick="closeModal('caseModal')">&#10005;</button></div><div id="caseModalBody"></div></div></div>
+<div class="ov" id="appModal"><div class="modal"><div class="mhdr"><div class="mttl" id="appModalTitle">&#1047;&#1072;&#1103;&#1074;&#1083;&#1077;&#1085;&#1080;&#1077;</div><button class="mcl" onclick="closeModal('appModal')">&#10005;</button></div><div id="appModalBody"></div></div></div>
+<div class="ov" id="camModal"><div class="modal" style="max-width:780px"><div class="mhdr"><div><div class="mttl" id="camModalTitle">&#1050;&#1072;&#1084;&#1077;&#1088;&#1072;</div><div id="camModalSub" style="font-size:11px;color:var(--txt2);margin-top:2px"></div></div><button class="mcl" onclick="closeModal('camModal')">&#10005;</button></div><div class="camstrm" id="camStream"></div><div id="camDet" style="margin-top:12px;font-size:13px;color:var(--txt2)"></div><div style="margin-top:10px;font-size:11px;color:var(--txt3)">&#128225; &#1058;&#1088;&#1072;&#1085;&#1089;&#1083;&#1103;&#1094;&#1080;&#1103; &#1074; &#1088;&#1077;&#1072;&#1083;&#1100;&#1085;&#1086;&#1084; &#1074;&#1088;&#1077;&#1084;&#1077;&#1085;&#1080; &middot; &#1087;&#1091;&#1073;&#1083;&#1080;&#1095;&#1085;&#1099;&#1077; &#1082;&#1072;&#1084;&#1077;&#1088;&#1099; &#1076;&#1083;&#1103; &#1076;&#1077;&#1084;&#1086;&#1085;&#1089;&#1090;&#1088;&#1072;&#1094;&#1080;&#1080;</div></div></div>
+<div class="ov" id="pinModal"><div class="modal" style="max-width:520px">
+  <div class="mhdr"><div><div class="mttl">&#128204; &#1047;&#1072;&#1103;&#1074;&#1083;&#1077;&#1085;&#1080;&#1077; &#1089; &#1082;&#1072;&#1088;&#1090;&#1099;</div><div id="pinCoords" style="font-size:11px;color:var(--txt2);margin-top:2px"></div></div><button class="mcl" onclick="closeModal('pinModal')">&#10005;</button></div>
+  <div class="fg"><label class="fl">&#1058;&#1080;&#1087;</label><select class="fsel" id="pmType"><option value="fraud">&#1052;&#1086;&#1096;&#1077;&#1085;&#1085;&#1080;&#1095;&#1077;&#1089;&#1090;&#1074;&#1086;</option><option value="theft">&#1050;&#1088;&#1072;&#1078;&#1072;</option><option value="violence">&#1053;&#1072;&#1089;&#1080;&#1083;&#1080;&#1077;</option><option value="traffic">&#1044;&#1058;&#1055;</option><option value="drugs">&#1053;&#1072;&#1088;&#1082;&#1086;&#1090;&#1080;&#1082;&#1080;</option><option value="other">&#1055;&#1088;&#1086;&#1095;&#1077;&#1077;</option></select></div>
+  <div class="fg"><label class="fl">&#1057;&#1090;&#1072;&#1090;&#1100;&#1103; &#1059;&#1050; &#1056;&#1050;</label><input class="fi" id="pmLaw" placeholder="&#1089;&#1090;.188 &#1095;.1 &#1059;&#1050; &#1056;&#1050;"></div>
+  <div class="fg"><label class="fl">&#1054;&#1087;&#1080;&#1089;&#1072;&#1085;&#1080;&#1077;</label><textarea class="fta" id="pmDesc" placeholder="&#1063;&#1090;&#1086; &#1087;&#1088;&#1086;&#1080;&#1079;&#1086;&#1096;&#1083;&#1086; &#1074; &#1101;&#1090;&#1086;&#1084; &#1084;&#1077;&#1089;&#1090;&#1077;?"></textarea></div>
+  <div class="fg"><label class="fl">&#1040;&#1076;&#1088;&#1077;&#1089; / &#1054;&#1088;&#1080;&#1077;&#1085;&#1090;&#1080;&#1088;</label><input class="fi" id="pmAddr" placeholder="&#1041;&#1083;&#1080;&#1078;&#1072;&#1081;&#1096;&#1080;&#1081; &#1086;&#1088;&#1080;&#1077;&#1085;&#1090;&#1080;&#1088;"></div>
+  <div class="flex g8"><button class="btn bpri w100" onclick="savePinApp()">&#128204; &#1044;&#1086;&#1073;&#1072;&#1074;&#1080;&#1090;&#1100; &#1084;&#1077;&#1090;&#1082;&#1091;</button><button class="btn bout" onclick="closeModal('pinModal')">&#1054;&#1090;&#1084;&#1077;&#1085;&#1072;</button></div>
+</div></div>
+
+<script>
+// =====================
+// DATA
+// =====================
+var CASES = [
+  {id:'252348031000087',district:'Кзылкогинский р-н',law:'ст.105 ч.1',title:'Самоубийство',desc:'18.12.2025 16:01 — гр. Орысбаева Карлыгаш, с. Сагыз, обнаружена повешенной.',victim:'Орысбаева К. (75 лет)',date:'18.12.2025 16:01',sev:'high',type:'other',lat:47.700,lng:53.900},
+  {id:'252352031000203',district:'Макатский р-н',law:'ст.109-1 ч.1',title:'Бытовое насилие',desc:'17.12.2025 20:08 — гр. Куанов угрожал Мурзабаевой в кент Макат, ул. Новастройка 130.',victim:'Мурзабаева Л.Ж. (56 лет)',date:'18.12.2025 10:03',sev:'med',type:'violence',lat:47.665,lng:53.370},
+  {id:'252336031000630',district:'Жылыойский р-н',law:'ст.109-1 ч.2',title:'Побои (2 потерп.)',desc:'17.12.2025 — г. Кульсары, 7-й аул, авторазборка: нанесены телесные повреждения.',victim:'Демеу А. (20л), Салмханова А. (28л)',date:'18.12.2025 11:50',sev:'med',type:'violence',lat:46.984,lng:54.003},
+  {id:'252311031000733',district:'Центр (Атырау)',law:'ст.187 ч.1',title:'Хищение в магазине',desc:'18.12.2025 — хищение из магазина Marco (ул. М.Ауэзова 58А) 12 шоколадок.',victim:'Магазин Marco',date:'18.12.2025 15:52',sev:'low',type:'theft',lat:47.108,lng:51.916},
+  {id:'252310031003681',district:'Жайык мкр. (Атырау)',law:'ст.188 ч.1',title:'Кража кабеля',desc:'05-18 декабря 2025 — кража кабеля предприятия напротив автосалона Mercedes.',victim:'Юридическое лицо',date:'18.12.2025 13:20',sev:'med',type:'theft',lat:47.130,lng:51.900},
+  {id:'252310031003686',district:'Другой город (Байконыр)',law:'ст.190 ч.2',title:'Мошенничество 2 млн',desc:'12.12.2025 — обманом перевели 2 000 000 тенге на неизвестный счет.',victim:'Дуйсалиев Б. (49 лет)',date:'18.12.2025 17:57',sev:'med',type:'fraud',lat:47.085,lng:51.843},
+  {id:'252336031000629',district:'Жылыойский р-н',law:'ст.190 ч.3',title:'Мошенничество 5 млн',desc:'Данисова под предлогом покупки квартиры получила 5 000 000 тенге.',victim:'Аймишева Б.Е. (51 год)',date:'18.12.2025 11:46',sev:'high',type:'fraud',lat:46.975,lng:54.010},
+  {id:'252310031003685',district:'Авангард мкр. (Атырау)',law:'ст.190 ч.4',title:'Интернет-мошенничество 77 млн',desc:'23.11.2025 — через мессенджер похищено 77 391 667 тенге.',victim:'Суркова И.Е. (41 год)',date:'18.12.2025 17:57',sev:'critical',type:'fraud',lat:47.120,lng:51.935},
+  {id:'252310031003682',district:'Центр (Атырау)',law:'ст.297 ч.3',title:'Наркотики (несоверш.)',desc:'18.12.2025 — дело о наркотиках в среде несовершеннолетних.',victim:'Д.Б. Ержан (несоверш.)',date:'18.12.2025 14:39',sev:'high',type:'drugs',lat:47.105,lng:51.875},
+  {id:'252310031003684',district:'Привокзальный мкр. (Атырау)',law:'ст.345 ч.1',title:'ДТП у школы N22',desc:'17.12.2025 — у школы N22 сбит ребенок 11 лет.',victim:'Мурасева М.В. (11 лет)',date:'18.12.2025 15:35',sev:'high',type:'traffic',lat:47.092,lng:51.905},
+  {id:'252310031003683',district:'Центр (Атырау)',law:'ст.345 ч.1',title:'ДТП столкновение',desc:'18.12.2025 00:30 — перекресток Молдалова-Есет Би: столкновение двух авто.',victim:'Кулшыманов Ж.К. (31 год)',date:'18.12.2025 15:20',sev:'high',type:'traffic',lat:47.123,lng:51.862}
+];
+
+var DC = {
+  'Центр':{lat:47.105,lng:51.910},'Авангард':{lat:47.120,lng:51.935},
+  'Сарыкамыс':{lat:47.138,lng:51.915},'Жумыскер':{lat:47.095,lng:51.875},
+  'Азаттык':{lat:47.113,lng:51.882},'Балауса':{lat:47.150,lng:51.920},
+  'Самал':{lat:47.095,lng:51.942},'Нурсая':{lat:47.070,lng:51.905},
+  'Нур-Гиса':{lat:47.140,lng:51.958},'Жайык':{lat:47.125,lng:51.905},
+  'Балыкши':{lat:47.100,lng:51.968},'Ракуша':{lat:47.068,lng:51.940},
+  'Привокзальный':{lat:47.133,lng:51.982},'Жылыойский':{lat:46.984,lng:54.003},
+  'Макатский':{lat:47.665,lng:53.370},'Кзылкогинский':{lat:47.700,lng:53.900}
+};
+function geoCode(d) {
+  var keys = Object.keys(DC);
+  for(var i=0;i<keys.length;i++){
+    if(d.toLowerCase().indexOf(keys[i].toLowerCase()) > -1) return {lat:DC[keys[i]].lat, lng:DC[keys[i]].lng};
+  }
+  return {lat:47.105+(Math.random()-.5)*.06, lng:51.91+(Math.random()-.5)*.06};
+}
+
+var APPS = [
+  {id:'APP-001',type:'fraud',district:'Авангард мкр. (Атырау)',address:'ул. Азаттык 45',law:'ст.190 УК РК',desc:'Звонок от неизвестного, представился сотрудником банка, запросил SMS-код.',status:'review',date:'18.12.2025 09:45',employee:'Сейткали Б.М.',lat:47.121,lng:51.932,fromMap:false},
+  {id:'APP-002',type:'traffic',district:'Жылыойский район',address:'ул. Конаева, у школы',law:'ст.345 УК РК',desc:'Автомобиль проехал на красный свет, едва не сбил детей.',status:'new',date:'18.12.2025 12:00',employee:'Ахметов А.К.',lat:46.988,lng:54.008,fromMap:false},
+  {id:'APP-003',type:'theft',district:'Центр (Атырау)',address:'Рынок Алтын Орда, пав. 14',law:'ст.188 ч.1 УК РК',desc:'Из сумки гражданки Ким И.В. похищен кошелек 35 000 тенге.',status:'done',date:'17.12.2025 15:30',employee:'Сейткали Б.М.',lat:47.107,lng:51.912,fromMap:false}
+];
+
+var ATR_DISTRICTS = [
+  {name:'Центр',color:'#0077CC',poly:[[47.117,51.882],[47.117,51.928],[47.100,51.930],[47.093,51.920],[47.093,51.888]]},
+  {name:'Авангард',color:'#7C3AED',poly:[[47.117,51.928],[47.133,51.920],[47.135,51.952],[47.117,51.952]]},
+  {name:'Сарыкамыс',color:'#059669',poly:[[47.133,51.898],[47.158,51.898],[47.158,51.938],[47.133,51.938]]},
+  {name:'Жумыскер',color:'#D97706',poly:[[47.082,51.855],[47.115,51.855],[47.115,51.882],[47.082,51.882]]},
+  {name:'Азаттык',color:'#DC2626',poly:[[47.115,51.868],[47.133,51.868],[47.133,51.900],[47.117,51.900],[47.115,51.882]]},
+  {name:'Балауса',color:'#0EA5E9',poly:[[47.150,51.898],[47.172,51.898],[47.172,51.936],[47.150,51.936]]},
+  {name:'Самал',color:'#F59E0B',poly:[[47.087,51.928],[47.110,51.930],[47.110,51.955],[47.087,51.953]]},
+  {name:'Нурсая',color:'#8B5CF6',poly:[[47.058,51.882],[47.090,51.882],[47.090,51.928],[47.058,51.928]]},
+  {name:'Нур-Гиса',color:'#EC4899',poly:[[47.133,51.950],[47.155,51.952],[47.155,51.982],[47.133,51.980]]},
+  {name:'Жайык',color:'#14B8A6',poly:[[47.117,51.900],[47.133,51.900],[47.133,51.925],[47.117,51.925]]},
+  {name:'Балыкши',color:'#6366F1',poly:[[47.082,51.952],[47.128,51.952],[47.128,51.998],[47.082,51.998]]},
+  {name:'Ракуша',color:'#EF4444',poly:[[47.052,51.920],[47.082,51.920],[47.082,51.960],[47.052,51.960]]},
+  {name:'Привокзальный',color:'#84CC16',poly:[[47.122,51.970],[47.150,51.970],[47.150,52.010],[47.122,52.010]]}
+];
+
+var CAM_DISTS = [
+  {id:'center',name:'Центр',lat:47.104,lng:51.905,total:8,cams:[
+    {id:'C-001',addr:'ул. Азаттык, 10',si:0},{id:'C-002',addr:'пл. Бейбарыса',si:1},
+    {id:'C-003',addr:'ул. Абая, 45',si:2},{id:'C-004',addr:'Центральный рынок',si:0},
+    {id:'C-005',addr:'Акимат Атырау',si:3},{id:'C-006',addr:'ул. М.Ауэзова, 58А',si:1},
+    {id:'C-007',addr:'ул. Молдалова-Есет Би',si:4},{id:'C-008',addr:'парк Балалар',si:2,off:true}
+  ]},
+  {id:'avangard',name:'Авангард',lat:47.122,lng:51.930,total:6,cams:[
+    {id:'C-009',addr:'Авангард-4, въезд',si:5},{id:'C-010',addr:'ул. Курмангазы, 120',si:0},
+    {id:'C-011',addr:'Авангард-3, школа',si:3},{id:'C-012',addr:'ул. Стадионная',si:1},
+    {id:'C-013',addr:'АЗС КазМунайГаз',si:2},{id:'C-014',addr:'пер. Авангард',si:4,off:true}
+  ]},
+  {id:'sarykamys',name:'Сарыкамыс',lat:47.140,lng:51.914,total:5,cams:[
+    {id:'C-015',addr:'Сарыкамыс, въезд',si:0},{id:'C-016',addr:'ул. Стрельникова',si:5},
+    {id:'C-017',addr:'Детская площадка 3',si:2},{id:'C-018',addr:'ул. Нефтяников',si:3},
+    {id:'C-019',addr:'Сарыкамыс, ТЦ',si:1}
+  ]},
+  {id:'balykshi',name:'Балыкши',lat:47.098,lng:51.965,total:7,cams:[
+    {id:'C-020',addr:'Мост через Жайык',si:1},{id:'C-021',addr:'ул. Балыкши, 1',si:3},
+    {id:'C-022',addr:'Рыбный порт',si:0},{id:'C-023',addr:'ул. Каирбекова',si:5},
+    {id:'C-024',addr:'школа N14',si:2},{id:'C-025',addr:'магазин Аян',si:4},
+    {id:'C-026',addr:'перекресток Ермека',si:1,off:true}
+  ]},
+  {id:'privokz',name:'Привокзальный',lat:47.132,lng:51.980,total:7,cams:[
+    {id:'C-027',addr:'Вокзал Атырау',si:0},{id:'C-028',addr:'Привокзальный, въезд',si:3},
+    {id:'C-029',addr:'ул. Вокзальная, 5',si:1},{id:'C-030',addr:'Школа N22',si:5},
+    {id:'C-031',addr:'Автовокзал',si:2},{id:'C-032',addr:'ул. Чкалова',si:4},
+    {id:'C-033',addr:'Аэропорт, парковка',si:0}
+  ]},
+  {id:'rakusha',name:'Ракуша',lat:47.068,lng:51.938,total:3,cams:[
+    {id:'C-034',addr:'Ракуша, въезд',si:2},{id:'C-035',addr:'ул. Нурсаитова',si:1},
+    {id:'C-036',addr:'Ракуша, дет. сад',si:4}
+  ]},
+  {id:'nursaya',name:'Нурсая',lat:47.068,lng:51.905,total:4,cams:[
+    {id:'C-037',addr:'Нурсая, въезд',si:3},{id:'C-038',addr:'ТЦ Нурсая Молл',si:0},
+    {id:'C-039',addr:'Нурсая, школа',si:5},{id:'C-040',addr:'парковка ТЦ',si:2,off:true}
+  ]},
+  {id:'samal',name:'Самал',lat:47.096,lng:51.942,total:5,cams:[
+    {id:'C-041',addr:'Самал, въезд',si:4},{id:'C-042',addr:'ул. Самальская',si:1},
+    {id:'C-043',addr:'школа N8',si:0},{id:'C-044',addr:'парк Самал',si:3},
+    {id:'C-045',addr:'ТЦ Мега',si:5}
+  ]},
+  {id:'zhumysker',name:'Жумыскер',lat:47.093,lng:51.875,total:4,cams:[
+    {id:'C-046',addr:'Жумыскер, въезд',si:4},{id:'C-047',addr:'ул. Промышленная',si:0},
+    {id:'C-048',addr:'АЗС Гелиос',si:5},{id:'C-049',addr:'Жумыскер, школа',si:2}
+  ]},
+  {id:'azattyk',name:'Азаттык',lat:47.113,lng:51.882,total:4,cams:[
+    {id:'C-050',addr:'Азаттык, въезд',si:1},{id:'C-051',addr:'ул. Азаттык, 50',si:4},
+    {id:'C-052',addr:'школа N5',si:2},{id:'C-053',addr:'парковка мечеть',si:0}
+  ]},
+  {id:'nurgisa',name:'Нур-Гиса',lat:47.140,lng:51.958,total:4,cams:[
+    {id:'C-054',addr:'Нур-Гиса, въезд',si:5},{id:'C-055',addr:'ул. Нур-Гисинская',si:3},
+    {id:'C-056',addr:'школа N31',si:0},{id:'C-057',addr:'АЗС Нур-Гиса',si:4}
+  ]},
+  {id:'balauса',name:'Балауса',lat:47.150,lng:51.918,total:3,cams:[
+    {id:'C-058',addr:'Балауса, въезд',si:2},{id:'C-059',addr:'ул. Балаусинская',si:0},
+    {id:'C-060',addr:'дет. сад N12',si:1,off:true}
+  ]}
+];
+
+var STREAMS = [
+  {id:'jfKfPfyJRdk'},{id:'ydYDqZQpnDE'},{id:'1-ihmv5cEIo'},
+  {id:'4ZGn6xoOCBk'},{id:'LpJ4hKHzO_s'},{id:'BmAGEOqbBjM'}
+];
+
+var AI_THREATS = [
+  {type:'danger',ico:'&#128298;',camId:'C-007',dist:'Центр',addr:'ул. Молдалова-Есет Би',title:'Обнаружено холодное оружие',msg:'ИИ обнаружил предмет похожий на нож. Камера C-007. Требуется реагирование!',si:4},
+  {type:'danger',ico:'&#128680;',camId:'C-030',dist:'Привокзальный',addr:'Школа N22',title:'Подозрительная активность у школы',msg:'ИИ зафиксировал незнакомца у входа в школу N22. Требуется проверка.',si:5},
+  {type:'warn',ico:'&#9888;',camId:'C-009',dist:'Авангард',addr:'Авангард-4, въезд',title:'Нарушение ПДД',msg:'ИИ зафиксировал автомобиль без номеров на высокой скорости.',si:5},
+  {type:'danger',ico:'&#128080;',camId:'C-002',dist:'Центр',addr:'пл. Бейбарыса',title:'Обнаружена драка',msg:'ИИ зафиксировал конфликт между людьми на площади. Возможное насилие.',si:1},
+  {type:'warn',ico:'&#127488;',camId:'C-020',dist:'Балыкши',addr:'Мост через Жайык',title:'Оставленный предмет',msg:'ИИ обнаружил оставленный пакет у моста. Возможная угроза.',si:1},
+  {type:'danger',ico:'&#128138;',camId:'C-003',dist:'Центр',addr:'ул. Абая, 45',title:'Подозрительный обмен',msg:'ИИ зафиксировал подозрительный обмен предметами. Возможный сбыт.',si:2}
+];
+
+var ACCS = {
+  admin: {pass:'admin123', role:'admin', name:'Иванов А.П.'},
+  sotrudnik: {pass:'sotrud123', role:'employee', name:'Ахметов Б.К.'}
+};
+var CU = null;
+
+// =====================
+// AUTH
+// =====================
+function selR(r) {
+  document.getElementById('aa').classList.toggle('sel', r === 'admin');
+  document.getElementById('ae').classList.toggle('sel', r === 'employee');
+  document.getElementById('lu').value = r === 'admin' ? 'admin' : 'sotrudnik';
+  document.getElementById('lp').value = r === 'admin' ? 'admin123' : 'sotrud123';
+}
+
+function doLogin() {
+  var u = document.getElementById('lu').value.trim();
+  var p = document.getElementById('lp').value;
+  var a = ACCS[u];
+  if (!a || a.pass !== p) {
+    document.getElementById('lerr').textContent = 'Неверный логин или пароль';
+    return;
+  }
+  CU = {role: a.role, name: a.name, login: u};
+  document.getElementById('lerr').textContent = '';
+  document.getElementById('ls').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  initApp();
+}
+
+function doLogout() {
+  CU = null;
+  document.getElementById('ls').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  if (mapObj) { mapObj.remove(); mapObj = null; mapInited = false; }
+  if (camMapObj) { camMapObj.remove(); camMapObj = null; camMapInited = false; }
+}
+
+// =====================
+// APP INIT
+// =====================
+function initApp() {
+  var isA = CU.role === 'admin';
+  var pages = [
+    {id:'dashboard', l:'&#128202; Дашборд'},
+    {id:'map', l:'&#128506; Карта'},
+    {id:'cameras', l:'&#128249; Камеры'},
+    {id:'reports', l:'&#128196; Отчёты'},
+    {id:'applications', l:'&#128221; Заявления'},
+    {id:'ai', l:'&#129302; ИИ'}
+  ];
+  if (isA) pages.push({id:'admin', l:'&#9881; Администратор'});
+  var navHtml = '';
+  for (var i = 0; i < pages.length; i++) {
+    navHtml += '<button class="nbtn" id="nb-' + pages[i].id + '" onclick="gp(\'' + pages[i].id + '\')">' + pages[i].l + '</button>';
+  }
+  document.getElementById('mainnav').innerHTML = navHtml;
+  document.getElementById('uname').textContent = CU.name + ' ';
+  document.getElementById('urole').innerHTML = isA ? '<span class="ra">Администратор</span>' : '<span class="re">Сотрудник</span>';
+  if (document.getElementById('empName')) document.getElementById('empName').textContent = CU.name;
+  renderCasesTable();
+  renderApps();
+  renderAIRecs();
+  renderVulns();
+  initCharts();
+  updateAdminCounts();
+  gp('dashboard');
+}
+
+// =====================
+// MAP
+// =====================
+var mapObj = null, mapInited = false, allMarkers = [], heatCircles = [], heatOn = false;
+var distLayers = [], distOn = false, pinMode = false, pinTempMarker = null;
+var pinLat = 0, pinLng = 0;
+var TC = {fraud:'#DC2626', theft:'#D97706', violence:'#7C3AED', traffic:'#059669', drugs:'#0077CC', other:'#6B7280', app:'#0077CC', pin:'#FF4500'};
+var TL = {fraud:'Мошенничество', theft:'Кража', violence:'Насилие', traffic:'ДТП', drugs:'Наркотики', other:'Прочее', app:'Заявление'};
+
+function initMap() {
+  if (mapInited) return;
+  mapInited = true;
+  mapObj = L.map('crime-map').setView([47.105, 51.91], 11);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {attribution:'CartoDB', maxZoom:19}).addTo(mapObj);
+  mapObj.on('click', onMapClick);
+  renderMapMarkers('all');
+  renderHotspots();
+}
+
+function makeIcon(color, pin) {
+  if (pin) {
+    return L.divIcon({className:'', html:'<div style="width:22px;height:22px;background:'+color+';border:3px solid #fff;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 2px 8px rgba(0,0,0,.4)"></div>', iconSize:[22,22], iconAnchor:[11,22]});
+  }
+  return L.divIcon({className:'', html:'<div style="width:14px;height:14px;background:'+color+';border:2px solid rgba(255,255,255,.95);border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.3)"></div>', iconSize:[14,14], iconAnchor:[7,7]});
+}
+
+function renderMapMarkers(f) {
+  for (var i = 0; i < allMarkers.length; i++) mapObj.removeLayer(allMarkers[i]);
+  allMarkers = [];
+  for (var i = 0; i < CASES.length; i++) {
+    var c = CASES[i];
+    if (f !== 'all' && f !== 'app' && c.type !== f) continue;
+    var j = function(){ return (Math.random()-.5)*.007; };
+    var m = L.marker([c.lat+j(), c.lng+j()], {icon: makeIcon(TC[c.type] || '#666')});
+    m.bindPopup('<b>' + c.title + '</b><br><small>' + c.district + '</small><br><small style="background:#ebf5ff;border-radius:4px;padding:2px 6px;color:#0077CC">' + c.law + '</small><br><small>' + c.date + '</small>');
+    m.addTo(mapObj);
+    allMarkers.push(m);
+  }
+  if (f === 'all' || f === 'app') {
+    for (var i = 0; i < APPS.length; i++) {
+      var a = APPS[i];
+      var j = function(){ return (Math.random()-.5)*.006; };
+      var m = L.marker([a.lat+j(), a.lng+j()], {icon: makeIcon(a.fromMap ? TC.pin : TC.app, a.fromMap)});
+      m.bindPopup('<b>' + (a.fromMap ? '&#128204; ' : '&#128221; ') + a.id + '</b><br><small>' + a.district + ', ' + a.address + '</small><br><small>' + a.desc.substring(0,70) + '...</small>');
+      m.addTo(mapObj);
+      allMarkers.push(m);
+    }
+  }
+}
+
+function applyFilter() {
+  var f = document.getElementById('mf').value;
+  if (heatOn) clearHeat();
+  renderMapMarkers(f);
+}
+function togHeat() {
+  if (heatOn) {
+    clearHeat();
+    document.getElementById('hbtn').textContent = 'Тепловая карта';
+    document.getElementById('hbtn').className = 'btn bout bsm';
+  } else {
+    drawHeat();
+    document.getElementById('hbtn').textContent = 'Скрыть тепло';
+    document.getElementById('hbtn').className = 'btn bred bsm';
+  }
+}
+function clearHeat() {
+  for (var i = 0; i < heatCircles.length; i++) mapObj.removeLayer(heatCircles[i]);
+  heatCircles = []; heatOn = false;
+}
+function drawHeat() {
+  var all = CASES.concat(APPS);
+  for (var i = 0; i < all.length; i++) {
+    var x = all[i];
+    var c = L.circle([x.lat, x.lng], {radius:650, color:'none', fillColor: TC[x.type] || '#666', fillOpacity:.17, interactive:false});
+    c.addTo(mapObj);
+    heatCircles.push(c);
+  }
+  heatOn = true;
+}
+function togDist() {
+  if (distOn) { for (var i=0;i<distLayers.length;i++) mapObj.removeLayer(distLayers[i]); distLayers = []; }
+  else {
+    for (var i = 0; i < ATR_DISTRICTS.length; i++) {
+      var d = ATR_DISTRICTS[i];
+      var p = L.polygon(d.poly, {color:d.color, weight:2, fillColor:d.color, fillOpacity:.12, dashArray:'5,4'});
+      p.addTo(mapObj);
+      var center = p.getBounds().getCenter();
+      var lb = L.marker(center, {icon: L.divIcon({className:'dlabel', html:d.name, iconAnchor:[d.name.length*3,8]})});
+      lb.addTo(mapObj);
+      distLayers.push(p, lb);
+    }
+  }
+  distOn = !distOn;
+  document.getElementById('dbtn').textContent = distOn ? 'Скрыть районы' : 'Районы';
+  document.getElementById('dbtn').className = distOn ? 'btn bred bsm' : 'btn bout bsm';
+}
+function togPin() {
+  pinMode = !pinMode;
+  var btn = document.getElementById('pinbtn');
+  var hint = document.getElementById('pinhint');
+  if (pinMode) {
+    btn.textContent = 'Отменить';
+    btn.className = 'btn bred bsm';
+    hint.style.display = 'block';
+    document.getElementById('crime-map').style.cursor = 'crosshair';
+  } else {
+    btn.textContent = 'Добавить заявление';
+    btn.className = 'btn bpri bsm';
+    hint.style.display = 'none';
+    document.getElementById('crime-map').style.cursor = '';
+    if (pinTempMarker) { mapObj.removeLayer(pinTempMarker); pinTempMarker = null; }
+  }
+}
+function onMapClick(e) {
+  if (!pinMode) return;
+  pinLat = e.latlng.lat; pinLng = e.latlng.lng;
+  if (pinTempMarker) mapObj.removeLayer(pinTempMarker);
+  pinTempMarker = L.marker([pinLat, pinLng], {icon: makeIcon('#FF4500', true)}).addTo(mapObj);
+  document.getElementById('pinCoords').textContent = 'Координаты: ' + pinLat.toFixed(5) + ', ' + pinLng.toFixed(5);
+  document.getElementById('pmDesc').value = '';
+  document.getElementById('pmLaw').value = '';
+  document.getElementById('pmAddr').value = '';
+  openModal('pinModal');
+  togPin();
+}
+function savePinApp() {
+  var desc = document.getElementById('pmDesc').value.trim();
+  if (!desc) { alert('Заполните описание'); return; }
+  var type = document.getElementById('pmType').value;
+  var law = document.getElementById('pmLaw').value.trim() || 'Уточняется';
+  var addr = document.getElementById('pmAddr').value.trim() || (pinLat.toFixed(4) + ', ' + pinLng.toFixed(4));
+  var nearDist = 'Атырау';
+  var minD = 999;
+  for (var k in DC) {
+    var d = Math.sqrt(Math.pow(DC[k].lat-pinLat,2)+Math.pow(DC[k].lng-pinLng,2));
+    if (d < minD) { minD = d; nearDist = k + ' (Атырау)'; }
+  }
+  var id = 'APP-' + String(APPS.length+1).padStart(3,'0');
+  APPS.unshift({id:id, type:type, district:nearDist, address:addr, law:law, desc:desc, status:'new', date:new Date().toLocaleString('ru',{hour12:false}), employee:CU.name, lat:pinLat, lng:pinLng, fromMap:true});
+  if (pinTempMarker) { mapObj.removeLayer(pinTempMarker); pinTempMarker = null; }
+  renderApps(); renderMapMarkers('all'); renderHotspots();
+  closeModal('pinModal');
+  alert('Заявление ' + id + ' добавлено с карты!\nРайон: ' + nearDist);
+}
+function renderHotspots() {
+  var cn = {};
+  var all = CASES.concat(APPS);
+  for (var i = 0; i < all.length; i++) {
+    var k = all[i].district.split(' ')[0].split('(')[0].trim();
+    cn[k] = (cn[k] || 0) + 1;
+  }
+  var arr = Object.keys(cn).map(function(k){ return [k, cn[k]]; });
+  arr.sort(function(a,b){ return b[1]-a[1]; });
+  arr = arr.slice(0,5);
+  var html = '';
+  for (var i = 0; i < arr.length; i++) {
+    var k = arr[i][0], v = arr[i][1];
+    var cls = v>=4?'pfr':v>=2?'pfo':'pfg';
+    html += '<div class="hrow"><span style="font-weight:600">' + k + '</span><div class="flex ac g8"><div class="ptrack" style="width:65px"><div class="pfill ' + cls + '" style="width:' + Math.min(100,v*18) + '%"></div></div><span style="font-weight:700">' + v + '</span></div></div>';
+  }
+  document.getElementById('hotspot').innerHTML = html;
+}
+function flyToCase(i) {
+  gp('map');
+  setTimeout(function(){
+    initMap();
+    mapObj.flyTo([CASES[i].lat, CASES[i].lng], 15, {duration:1});
+    renderMapMarkers('all');
+    setTimeout(function(){ if(allMarkers[i]) allMarkers[i].openPopup(); }, 1200);
+  }, 200);
+}
+function flyToApp(i) {
+  gp('map');
+  setTimeout(function(){
+    initMap();
+    renderMapMarkers('all');
+    mapObj.flyTo([APPS[i].lat, APPS[i].lng], 15, {duration:1});
+    var mi = CASES.length + i;
+    setTimeout(function(){ if(allMarkers[mi]) allMarkers[mi].openPopup(); }, 1200);
+  }, 200);
+}
+
+// =====================
+// CAMERA MAP
+// =====================
+var camMapObj = null, camMapInited = false, curTileLayer = null;
+var TILES = {
+  classic:'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+  satellite:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+};
+
+function initCamMap() {
+  if (camMapInited) return;
+  camMapInited = true;
+  camMapObj = L.map('cam-map').setView([47.105, 51.91], 12);
+  curTileLayer = L.tileLayer(TILES.classic, {attribution:'CartoDB', maxZoom:19}).addTo(camMapObj);
+  renderCamMarkers();
+  renderCamDistList();
+}
+function setTile(t) {
+  if (!camMapInited) return;
+  if (curTileLayer) camMapObj.removeLayer(curTileLayer);
+  curTileLayer = L.tileLayer(TILES[t], {attribution: t==='satellite'?'ESRI':'CartoDB', maxZoom:19}).addTo(camMapObj);
+  document.getElementById('tb-cls').classList.toggle('active', t==='classic');
+  document.getElementById('tb-sat').classList.toggle('active', t==='satellite');
+}
+function renderCamMarkers() {
+  for (var i = 0; i < CAM_DISTS.length; i++) {
+    (function(d){
+      var on = d.cams.filter(function(c){ return !c.off; }).length;
+      var icon = L.divIcon({className:'', html:'<div class="camico"><span>&#128249;</span><span style="color:' + (on===d.total?'#22c55e':'#facc15') + ';font-weight:700">' + on + '/' + d.total + '</span></div>', iconSize:[90,30], iconAnchor:[45,15]});
+      var m = L.marker([d.lat, d.lng], {icon:icon});
+      m.bindPopup('<b>&#128249; ' + d.name + '</b><br><span style="color:#22c55e;font-size:11px">&#9679; ' + on + ' онлайн</span> <span style="color:#888;font-size:11px">' + (d.total-on) + ' офлайн</span><br><div style="margin-top:7px"><button onclick="closeCamPopup();openCamDist(\'' + d.id + '\')" style="background:#0077CC;color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:12px;cursor:pointer;font-weight:600">Просмотр камер</button></div>');
+      m.addTo(camMapObj);
+    })(CAM_DISTS[i]);
+  }
+}
+function closeCamPopup() {
+  camMapObj.closePopup();
+}
+function renderCamDistList() {
+  var html = '';
+  for (var i = 0; i < CAM_DISTS.length; i++) {
+    var d = CAM_DISTS[i];
+    var on = d.cams.filter(function(c){ return !c.off; }).length;
+    var off = d.total - on;
+    html += '<div class="dcrow" onclick="openCamDist(\'' + d.id + '\')">';
+    html += '<div><div style="font-size:13px;font-weight:700">' + d.name + '</div><div style="font-size:11px;color:var(--txt2)">' + d.total + ' камер</div></div>';
+    html += '<div style="text-align:right"><div style="font-size:12px;font-weight:700;color:var(--grn)">&#9679; ' + on + ' онлайн</div>';
+    if (off > 0) html += '<div style="font-size:11px;color:var(--red)">&#9679; ' + off + ' офлайн</div>';
+    html += '</div></div>';
+  }
+  document.getElementById('camdistlist').innerHTML = html;
+}
+function openCamDist(distId) {
+  var d = null;
+  for (var i = 0; i < CAM_DISTS.length; i++) {
+    if (CAM_DISTS[i].id === distId) { d = CAM_DISTS[i]; break; }
+  }
+  if (!d) return;
+  if (camMapInited) camMapObj.flyTo([d.lat, d.lng], 14, {duration:0.8});
+  var on = d.cams.filter(function(c){ return !c.off; }).length;
+  document.getElementById('camModalTitle').textContent = 'Камеры - ' + d.name;
+  document.getElementById('camModalSub').textContent = d.total + ' камер, ' + on + ' онлайн';
+  document.getElementById('camStream').innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#aaa;flex-direction:column;gap:8px"><div style="font-size:32px">&#128249;</div><div>Выберите камеру</div></div>';
+  var detHtml = '<div style="font-weight:700;margin-bottom:8px">Камеры района ' + d.name + ':</div>';
+  for (var i = 0; i < d.cams.length; i++) {
+    var c = d.cams[i];
+    var dotClass = c.off ? 'offdot' : 'ondot';
+    var btnClass = c.off ? 'bout' : 'bpri';
+    var btnText = c.off ? 'Офлайн' : 'Смотреть';
+    var btnDisabled = c.off ? ' disabled' : '';
+    var btnClick = c.off ? '' : (' onclick="viewCam(\'' + c.id + '\',\'' + d.name + '\',' + c.si + ',\'' + c.addr + '\')"');
+    detHtml += '<div class="camrow">';
+    detHtml += '<div><span class="' + dotClass + '"></span><span style="font-size:12px;font-weight:600">' + c.id + '</span><span style="font-size:12px;color:var(--txt2);margin-left:8px">' + c.addr + '</span></div>';
+    detHtml += '<button class="btn ' + btnClass + ' bsm"' + btnDisabled + btnClick + '>' + btnText + '</button>';
+    detHtml += '</div>';
+  }
+  document.getElementById('camDet').innerHTML = detHtml;
+  openModal('camModal');
+}
+function viewCam(id, distName, si, addr) {
+  document.getElementById('camModalTitle').textContent = id + ' - ' + distName;
+  document.getElementById('camModalSub').textContent = addr;
+  document.getElementById('camStream').innerHTML = '<iframe src="https://www.youtube.com/embed/' + STREAMS[si].id + '?autoplay=1&mute=0&rel=0" allow="autoplay; fullscreen" allowfullscreen style="width:100%;height:100%;border:none"></iframe>';
+  document.getElementById('camDet').innerHTML = '<span style="font-size:12px;color:var(--txt2)">&#128225; ' + id + ' - ' + addr + ' - <span style="color:var(--grn);font-weight:700">LIVE</span></span>';
+}
+
+// =====================
+// AI ALERTS
+// =====================
+var aiTimer = null;
+var aiAlertIdx = 0;
+var aiLogItems = [];
+
+function fireAlert(idx) {
+  var t = AI_THREATS[idx];
+  var now = new Date().toLocaleTimeString('ru', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+  showToast(t, now);
+  addAILog(t, now);
+  var panel = document.getElementById('aialertpanel');
+  if (panel) {
+    panel.style.display = 'block';
+    document.getElementById('aiAlertMsg').innerHTML = '<strong>' + t.ico + ' ' + t.title + '</strong><br>Камера: ' + t.camId + ' - ' + t.dist + ' - ' + t.addr + '<br>Время: ' + now;
+    setTimeout(function(){ if(panel) panel.style.display = 'none'; }, 9000);
+  }
+}
+function showToast(t, time) {
+  var tray = document.getElementById('toasttray');
+  var div = document.createElement('div');
+  div.className = 'toast' + (t.type === 'warn' ? ' warn' : '');
+  div.innerHTML = '<div class="t-ico">' + t.ico + '</div>' +
+    '<div class="t-body">' +
+      '<div class="t-title">&#129302; ИИ-ОБНАРУЖЕНИЕ - ' + t.dist + '</div>' +
+      '<div class="t-msg"><strong>' + t.title + '</strong><br>' + t.camId + ' - ' + t.addr + '</div>' +
+      '<div class="t-time">&#128336; ' + time + '</div>' +
+      '<div class="t-act">' +
+        '<button class="tbtn tbr" onclick="respondAlert(' + t.si + ',\'' + t.camId + '\',\'' + t.addr + '\')">&#128680; Реагировать</button>' +
+        '<button class="tbtn tba" onclick="viewCamAlert(' + t.si + ',\'' + t.camId + '\',\'' + t.addr + '\')">&#128249; Камера</button>' +
+        '<button class="tbtn tbg" onclick="dismissToast(this)">Закрыть</button>' +
+      '</div>' +
+    '</div>' +
+    '<button class="t-cl" onclick="dismissToast(this.parentElement)">&#10005;</button>';
+  tray.appendChild(div);
+  setTimeout(function(){
+    if (div.parentElement) { div.style.animation = 'sOut .35s ease forwards'; setTimeout(function(){ div.remove(); }, 350); }
+  }, 12000);
+}
+function dismissToast(el) {
+  var t = el.classList && el.classList.contains('toast') ? el : el.closest('.toast');
+  if (t) { t.style.animation = 'sOut .35s ease forwards'; setTimeout(function(){ t.remove(); }, 350); }
+}
+function respondAlert(si, camId, addr) {
+  gp('cameras');
+  setTimeout(function(){
+    initCamMap();
+    document.getElementById('camModalTitle').textContent = camId + ' - ТРЕВОГА';
+    document.getElementById('camModalSub').textContent = addr;
+    document.getElementById('camStream').innerHTML = '<iframe src="https://www.youtube.com/embed/' + STREAMS[si].id + '?autoplay=1&mute=0&rel=0" allow="autoplay; fullscreen" allowfullscreen style="width:100%;height:100%;border:none"></iframe>';
+    document.getElementById('camDet').innerHTML = '<div style="padding:9px;background:var(--red-l);border-radius:8px;border:1px solid var(--red);font-size:12px;color:var(--red);font-weight:600">&#128680; ТРЕВОГА - ИИ обнаружил угрозу на камере ' + camId + ' - ' + addr + '</div>';
+    openModal('camModal');
+  }, 300);
+}
+function viewCamAlert(si, camId, addr) {
+  gp('cameras');
+  setTimeout(function(){
+    initCamMap();
+    viewCam(camId, '', si, addr);
+    openModal('camModal');
+  }, 300);
+}
+function addAILog(t, time) {
+  aiLogItems.unshift({t:t, time:time});
+  var log = document.getElementById('ailog');
+  if (!log) return;
+  var html = '';
+  var items = aiLogItems.slice(0, 15);
+  for (var i = 0; i < items.length; i++) {
+    var x = items[i];
+    var bg = x.t.type === 'danger' ? 'var(--red-l)' : 'var(--org-l)';
+    var bc = x.t.type === 'danger' ? 'var(--red)' : 'var(--org)';
+    html += '<div class="aiLogItem" style="background:' + bg + ';border-color:' + bc + '">';
+    html += '<div style="font-weight:700;font-size:12px;color:' + bc + '">' + x.t.ico + ' ' + x.t.title + '</div>';
+    html += '<div style="font-size:11px;color:var(--txt2);margin-top:2px">' + x.t.camId + ' - ' + x.t.dist + ' - ' + x.time + '</div>';
+    html += '</div>';
+  }
+  log.innerHTML = html || '<div style="color:var(--txt2);text-align:center;padding:20px">Нет событий</div>';
+}
+function runAISim() {
+  fireAlert(Math.floor(Math.random() * AI_THREATS.length));
+}
+
+// =====================
+// CASES TABLE
+// =====================
+var SEVB = {critical:'br', high:'br', med:'bo', low:'bg'};
+var SEVL = {critical:'Особо тяжкое', high:'Тяжкое', med:'Средней тяж.', low:'Небольшой'};
+function renderCasesTable() {
+  var html = '';
+  for (var i = 0; i < CASES.length; i++) {
+    var c = CASES[i];
+    html += '<tr class="click" onclick="openCaseModal(' + i + ')">';
+    html += '<td><span class="mono f11" style="color:var(--acc)">#' + (i+1) + '</span></td>';
+    html += '<td class="f12">' + c.district + '</td>';
+    html += '<td><span class="b bb">' + c.law + '</span></td>';
+    html += '<td><div style="font-weight:700;font-size:12px">' + c.title + '</div><div class="f11 t2">' + c.desc.substring(0,46) + '...</div></td>';
+    html += '<td class="f12 t2">' + c.victim.substring(0,24) + '</td>';
+    html += '<td class="mono f11 t2">' + c.date + '</td>';
+    html += '<td><span class="b ' + SEVB[c.sev] + '">' + SEVL[c.sev] + '</span></td>';
+    html += '<td><button class="btn bout bsm" onclick="event.stopPropagation();flyToCase(' + i + ')">&#128506;</button></td>';
+    html += '</tr>';
+  }
+  document.getElementById('ctbody').innerHTML = html;
+}
+function openCaseModal(i) {
+  var c = CASES[i];
+  document.getElementById('caseModalTitle').textContent = c.title + ' - ' + c.district;
+  var html = '<div class="flex g8 mb10" style="flex-wrap:wrap">';
+  html += '<span class="b bb">' + c.law + '</span>';
+  html += '<span class="b bp mono f11">ЕРДР: ' + c.id + '</span>';
+  html += '<span class="b ' + SEVB[c.sev] + '">' + SEVL[c.sev] + '</span>';
+  html += '</div>';
+  html += '<div class="igrid"><div><div class="ilbl">Район</div><div class="ival">' + c.district + '</div></div><div><div class="ilbl">Дата</div><div class="ival mono f11">' + c.date + '</div></div></div>';
+  html += '<div class="ilbl">Обстоятельства</div>';
+  html += '<div style="font-size:13px;line-height:1.8;background:var(--sur2);border:1px solid var(--bdr);border-radius:7px;padding:11px;margin-bottom:10px">' + c.desc + '</div>';
+  html += '<div class="ilbl">Потерпевший</div>';
+  html += '<div style="font-size:14px;font-weight:600;margin-bottom:10px">' + c.victim + '</div>';
+  html += '<div class="airec mb10">&#129302; Проверить дела по ' + c.law + ' в ' + c.district + ' за 30 дней</div>';
+  html += '<div class="flex g8"><button class="btn bpri" onclick="closeModal(\'caseModal\');flyToCase(' + i + ')">&#128506; На карте</button><button class="btn bout" onclick="closeModal(\'caseModal\')">Закрыть</button></div>';
+  document.getElementById('caseModalBody').innerHTML = html;
+  openModal('caseModal');
+}
+
+// =====================
+// APPS
+// =====================
+var SB = {new:'bb', review:'bo', done:'bg', reject:'br'};
+var SL = {new:'Новое', review:'На рассмотрении', done:'Выполнено', reject:'Отклонено'};
+var TI = {fraud:'&#128181;', theft:'&#128275;', violence:'&#9888;', traffic:'&#128663;', drugs:'&#128138;', other:'&#128203;'};
+function renderApps() {
+  var isA = CU && CU.role === 'admin';
+  var html = '';
+  for (var i = 0; i < APPS.length; i++) {
+    var a = APPS[i];
+    html += '<div class="citem">';
+    html += '<div class="flex ac jb mb8"><div class="flex ac g8"><span style="font-size:18px">' + (a.fromMap ? '&#128204;' : (TI[a.type]||'&#128203;')) + '</span>';
+    html += '<div><div class="mono f11" style="color:var(--acc)">' + a.id + (a.fromMap ? ' <span style="background:var(--red-l);color:var(--red);font-size:10px;padding:1px 5px;border-radius:4px">с карты</span>' : '') + '</div>';
+    html += '<div style="font-size:13px;font-weight:700">' + TL[a.type] + ' - ' + a.district + '</div></div></div>';
+    html += '<span class="b ' + SB[a.status] + '">' + SL[a.status] + '</span></div>';
+    html += '<div class="f12 t2 mb8">&#128205; ' + a.address + ' &nbsp;&#183;&nbsp; &#128100; ' + a.employee + ' &nbsp;&#183;&nbsp; &#128336; ' + a.date + '</div>';
+    html += '<div style="font-size:12px;color:var(--txt2);margin-bottom:8px">' + a.desc.substring(0,100) + (a.desc.length>100?'...':'') + '</div>';
+    html += '<div class="flex g8" style="flex-wrap:wrap">';
+    html += '<button class="btn bout bsm" onclick="openAppModal(' + i + ')">&#128203; Подробнее</button>';
+    html += '<button class="btn bout bsm" onclick="flyToApp(' + i + ')">&#128506; На карте</button>';
+    if (isA && (a.status === 'new' || a.status === 'review')) {
+      html += '<button class="btn bgrn bsm" onclick="updateStatus(' + i + ',\'done\')">&#10003; Принять</button>';
+      html += '<button class="btn bred bsm" onclick="updateStatus(' + i + ',\'reject\')">&#10007; Отклонить</button>';
+    }
+    html += '</div></div>';
+  }
+  document.getElementById('appsContainer').innerHTML = html;
+  updateAdminCounts();
+  if (document.getElementById('empCount')) document.getElementById('empCount').textContent = APPS.length;
+}
+function openAppModal(i) {
+  var a = APPS[i];
+  var isA = CU && CU.role === 'admin';
+  document.getElementById('appModalTitle').textContent = 'Заявление ' + a.id;
+  var html = '<div class="flex g8 mb10" style="flex-wrap:wrap">';
+  html += '<span class="b bb">' + TL[a.type] + '</span>';
+  html += '<span class="b ' + SB[a.status] + '">' + SL[a.status] + '</span>';
+  if (a.fromMap) html += '<span class="b br">&#128204; С карты</span>';
+  html += '</div>';
+  html += '<div class="igrid"><div><div class="ilbl">Район</div><div class="ival">' + a.district + '</div></div><div><div class="ilbl">Адрес</div><div class="ival">' + a.address + '</div></div></div>';
+  html += '<div class="igrid"><div><div class="ilbl">Статья УК</div><div class="ival">' + (a.law||'Уточняется') + '</div></div><div><div class="ilbl">Сотрудник</div><div class="ival">' + a.employee + '</div></div></div>';
+  html += '<div class="ilbl">Описание</div>';
+  html += '<div style="font-size:13px;line-height:1.8;background:var(--sur2);border:1px solid var(--bdr);border-radius:7px;padding:11px;margin-bottom:10px">' + a.desc + '</div>';
+  html += '<div class="airec mb10">&#129302; Точка нанесена на карту: ' + a.district + ', ' + a.address + '</div>';
+  html += '<div class="flex g8" style="flex-wrap:wrap">';
+  html += '<button class="btn bpri" onclick="closeModal(\'appModal\');flyToApp(' + i + ')">&#128506; На карте</button>';
+  if (isA && (a.status === 'new' || a.status === 'review')) {
+    html += '<button class="btn bgrn" onclick="updateStatus(' + i + ',\'done\');closeModal(\'appModal\')">&#10003; Принять</button>';
+    html += '<button class="btn bred" onclick="updateStatus(' + i + ',\'reject\');closeModal(\'appModal\')">&#10007; Отклонить</button>';
+  }
+  html += '<button class="btn bout" onclick="closeModal(\'appModal\')">Закрыть</button>';
+  html += '</div>';
+  document.getElementById('appModalBody').innerHTML = html;
+  openModal('appModal');
+}
+function updateStatus(i, s) { APPS[i].status = s; renderApps(); updateAdminCounts(); }
+function showNewApp() {
+  switchATab('atnew', document.getElementById('atab1'));
+}
+function gotoMapPin() { gp('map'); setTimeout(function(){ togPin(); }, 300); }
+function submitApp() {
+  var desc = document.getElementById('fdesc').value.trim();
+  if (!desc) { alert('Заполните описание'); return; }
+  var type = document.getElementById('ftype').value;
+  var dist = document.getElementById('fdistrict').value;
+  var addr = document.getElementById('faddr').value.trim() || '—';
+  var law = document.getElementById('flaw').value.trim() || 'Уточняется';
+  var coords = geoCode(dist);
+  var id = 'APP-' + String(APPS.length+1).padStart(3,'0');
+  APPS.unshift({id:id, type:type, district:dist, address:addr, law:law, desc:desc, status:'new', date:new Date().toLocaleString('ru',{hour12:false}), employee:CU.name, lat:coords.lat, lng:coords.lng, fromMap:false});
+  renderApps();
+  document.getElementById('fdesc').value = '';
+  document.getElementById('faddr').value = '';
+  document.getElementById('flaw').value = '';
+  switchATab('atlist', document.getElementById('atab0'));
+  var fi = document.querySelector('#appsContainer .citem');
+  if (fi) { fi.style.borderColor = 'var(--grn)'; setTimeout(function(){ fi.style.borderColor = ''; }, 2000); }
+  alert('Заявление ' + id + ' отправлено!\n' + dist + ', ' + addr);
+}
+function updateAdminCounts() {
+  var pend = APPS.filter(function(a){ return a.status === 'new' || a.status === 'review'; }).length;
+  var el1 = document.getElementById('pendCount'), el2 = document.getElementById('totalCount');
+  if (el1) el1.textContent = pend;
+  if (el2) el2.textContent = APPS.length;
+  var nb = document.getElementById('nb-applications');
+  if (nb) nb.innerHTML = '&#128221; Заявления' + (pend > 0 ? ' <span class="nbadge">' + pend + '</span>' : '');
+  updateAdminChart();
+}
+
+// =====================
+// AI PAGE
+// =====================
+function askAI() {
+  var q = document.getElementById('aiq').value.trim();
+  if (!q) return;
+  document.getElementById('aiansDiv').style.display = 'block';
+  document.getElementById('aiSpinner').style.display = 'flex';
+  document.getElementById('aiAnswer').style.display = 'none';
+  setTimeout(function(){
+    document.getElementById('aiAnswer').textContent = getAIAnswer(q);
+    document.getElementById('aiSpinner').style.display = 'none';
+    document.getElementById('aiAnswer').style.display = 'block';
+  }, 800);
+}
+function getAIAnswer(q) {
+  var l = q.toLowerCase();
+  if (l.indexOf('опасн') > -1 || l.indexOf('район') > -1) return 'Наиболее опасный район — г. Атырау (7 из 11 дел, 64%). Жылыойский район — 2 дела за сутки. Приоритет: Авангард-4, Центр, Привокзальный.';
+  if (l.indexOf('мошен') > -1) return '4 дела мошенничества, ущерб 84.4 млн тенге. Крупнейшее — 77.4 млн (тел. +7 747 867 91 37). Требуется запрос к операторам.';
+  if (l.indexOf('камер') > -1) return 'В системе 60 камер в 12 районах. Онлайн: 55 камер. ИИ ведет мониторинг 24/7 на признаки оружия и насилия.';
+  if (l.indexOf('дтп') > -1 || l.indexOf('авари') > -1) return '2 ДТП, 3 пострадавших. Критично: сбит ребенок 11 лет у школы N22. Необходимы лежачие полицейские и ограничение 30 км/ч.';
+  if (l.indexOf('прогноз') > -1) return 'Прогноз на 7 дней: снижение на 10-15%. Риск мошенничества +20% в праздники. ДТП повышен ночью.';
+  return 'SafeCity за 18.12.2025: 11 расследований (▼59%), ущерб 84.4 млн тенге, 60 камер в 12 районах, ИИ-мониторинг 24/7.';
+}
+var ARS = [
+  {p:'critical', ic:'&#128680;', t:'Интернет-мошенничество', tx:'4 дела, 84.4 млн тенге за 1 день.', acts:['Запрос к операторам по +7 747 867 91 37','Блокировка счетов','Медиакампания в WhatsApp']},
+  {p:'high', ic:'&#128663;', t:'ДТП у школы N22', tx:'Сбит ребенок 11 лет. Привокзальный мкр.', acts:['Лежачие полицейские у школы N22','Ограничение 30 км/ч','Усиленный ДПС 13:00-14:30']},
+  {p:'high', ic:'&#128247;', t:'Видеонаблюдение - Жылыой', tx:'2 инцидента за сутки.', acts:['Проверить камеры в 7-м ауле','3-5 новых камер в слепых зонах']},
+  {p:'med', ic:'&#127968;', t:'Бытовое насилие', tx:'Макат и Жылыой — повторяющиеся адреса.', acts:['Реестр жестких адресов','Соцработники: Макат ул.Новастройка 130']}
+];
+var PB = {critical:'br', high:'br', med:'bo', low:'bg'};
+var PL = {critical:'Критично', high:'Высокий', med:'Средний', low:'Низкий'};
+var PR = {critical:'danger', high:'warn', med:'', low:''};
+function renderAIRecs() {
+  var html = '';
+  for (var i = 0; i < ARS.length; i++) {
+    var r = ARS[i];
+    html += '<div style="border:1px solid var(--bdr);border-radius:9px;padding:11px;margin-bottom:9px;background:var(--sur2)">';
+    html += '<div class="flex ac jb mb8"><div class="flex ac g8"><span style="font-size:18px">' + r.ic + '</span><span style="font-weight:700;font-size:13px">' + r.t + '</span></div><span class="b ' + PB[r.p] + '">' + PL[r.p] + '</span></div>';
+    html += '<p class="f12 t2" style="margin-bottom:5px">' + r.tx + '</p>';
+    for (var j = 0; j < r.acts.length; j++) {
+      html += '<div class="airec ' + PR[r.p] + '" style="margin-top:4px">&#8226; ' + r.acts[j] + '</div>';
+    }
+    html += '</div>';
+  }
+  document.getElementById('airecs').innerHTML = html;
+}
+var VD = [
+  {l:'Интернет-мошенничество', pct:78, cl:'pfr', p:'critical'},
+  {l:'ДТП у школ', pct:55, cl:'pfo', p:'high'},
+  {l:'Бытовое насилие', pct:40, cl:'pfo', p:'med'},
+  {l:'Кражи', pct:22, cl:'pfg', p:'low'}
+];
+function renderVulns() {
+  var html = '';
+  for (var i = 0; i < VD.length; i++) {
+    var v = VD[i];
+    html += '<div style="padding:7px 0;border-bottom:1px solid var(--bdr)">';
+    html += '<div class="flex ac jb mb8"><span style="font-weight:600;font-size:13px">' + v.l + '</span><span class="b ' + PB[v.p] + '">' + PL[v.p] + '</span></div>';
+    html += '<div class="ptrack"><div class="pfill ' + v.cl + '" style="width:' + v.pct + '%"></div></div>';
+    html += '</div>';
+  }
+  document.getElementById('vulns').innerHTML = html;
+}
+
+// =====================
+// REPORTS
+// =====================
+var rLoaded = false;
+var rFileName = '';
+var rHistory = [];
+
+function onFileSelect(inp) {
+  if (inp.files && inp.files[0]) {
+    rFileName = inp.files[0].name;
+    document.getElementById('rfname').textContent = inp.files[0].name;
+    rLoaded = true;
+    var btn = document.getElementById('analyzebtn');
+    if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
+  }
+}
+function runAnalysis() {
+  if (!rLoaded || !rFileName) { alert('Сначала выберите файл отчёта'); return; }
+  switchRTab('rtr', document.getElementById('rtab1'));
+  document.getElementById('rtrBody').innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:40px;justify-content:center;color:var(--txt2)"><div class="spin"></div>ИИ анализирует файл...</div>';
+  setTimeout(function(){
+    var txt = getAnalysisText();
+    renderReport(txt);
+    var now = new Date().toLocaleString('ru', {hour12:false});
+    rHistory.unshift({date:now, file:rFileName, cases:11, risk:'med', txt:txt});
+    renderHistory();
+    rLoaded = false;
+    rFileName = '';
+    document.getElementById('rfname').textContent = '';
+    document.getElementById('rfile').value = '';
+    var btn = document.getElementById('analyzebtn');
+    if (btn) { btn.disabled = true; btn.style.opacity = '.5'; }
+  }, 1200);
+}
+function renderHistory() {
+  if (!rHistory.length) {
+    document.getElementById('histEmpty').style.display = 'block';
+    document.getElementById('histTable').style.display = 'none';
+    return;
+  }
+  document.getElementById('histEmpty').style.display = 'none';
+  document.getElementById('histTable').style.display = 'block';
+  var html = '';
+  for (var i = 0; i < rHistory.length; i++) {
+    var h = rHistory[i];
+    var rCls = h.risk === 'high' ? 'br' : h.risk === 'med' ? 'bo' : 'bg';
+    var rTxt = h.risk === 'high' ? 'Высокий' : h.risk === 'med' ? 'Средний' : 'Низкий';
+    html += '<tr>';
+    html += '<td class="f12">' + h.date + '</td>';
+    html += '<td class="mono f11" style="color:var(--acc)">' + h.file + '</td>';
+    html += '<td style="font-weight:700">' + h.cases + '</td>';
+    html += '<td><span class="b ' + rCls + '">' + rTxt + '</span></td>';
+    html += '<td><button class="btn bout bsm" onclick="viewHistEntry(' + i + ')">Просмотр</button></td>';
+    html += '</tr>';
+  }
+  document.getElementById('histTbody').innerHTML = html;
+}
+function viewHistEntry(i) {
+  switchRTab('rtr', document.getElementById('rtab1'));
+  renderReport(rHistory[i].txt, rHistory[i].file);
+}
+function getAnalysisText() {
+  return 'ОБЩИЙ ВЫВОД\n' +
+'За 18 декабря 2025 г. по Атырауской области зарегистрировано 11 досудебных\n' +
+'расследований — снижение на 59.3% по сравнению с аналогичным периодом 2024 г. (27 дел).\n' +
+'Положительная динамика прослеживается по большинству категорий, однако критическую\n' +
+'обеспокоенность вызывают: рост интернет-мошенничества с ущербом 84.4 млн тенге\n' +
+'и ДТП с наездом на ребенка у школы N22.\n\n' +
+'КЛЮЧЕВЫЕ ТЕНДЕНЦИИ\n' +
+'- Мошенничество (ст.190): 4 из 8 дел, 50%. Суммарный ущерб 84.4 млн тенге за сутки.\n' +
+'- ДТП (ст.345): 2 случая, 3 пострадавших, в т.ч. ребенок 11 лет.\n' +
+'- Насилие (ст.109-1): 2 бытовых дела — Макат и Кульсары.\n' +
+'- Кражи (ст.187-188): снижение на 50% к 2024 г. — позитивная тенденция.\n' +
+'- Тяжкие преступления: снижение на 50% к 2024 г.\n' +
+'- Проступки: рост в 3 раза (+200%) — требует мониторинга.\n\n' +
+'АНАЛИЗ ПО ЗОНАМ РИСКА\n' +
+'1. г. Атырау — 7 из 11 дел (64%). Приоритетные районы: Авангард-4, Привокзальный, Центр.\n' +
+'   Сосредоточены все 4 случая мошенничества и оба ДТП с пострадавшими.\n' +
+'2. Жылыойский район — 2 дела за сутки (г. Кульсары). Зона мониторинга.\n' +
+'3. Макатский район — бытовое насилие, повторная адресация ул. Новастройка.\n' +
+'4. Кзылкогинский район — изолированный суицид, требует социальной работы.\n\n' +
+'РЕКОМЕНДАЦИИ ДЛЯ ПРОКУРАТУРЫ\n' +
+'1. СРОЧНО: Запрос к мобильным операторам по номеру +7 747 867 91 37 (дело 77 млн тг).\n' +
+'   Блокировка выявленных счетов по делу ст.190 ч.4.\n' +
+'2. До конца недели: лежачие полицейские у школы N22 (Привокзальный мкр.).\n' +
+'   Ограничение скорости до 30 км/ч в период 07:00-19:00.\n' +
+'3. Медиакампания в WhatsApp и Instagram — предупреждение об инвестиционных схемах.\n' +
+'4. Направить соцработников: кент Макат ул. Новастройка 130; Кульсары 7-й аул.\n' +
+'5. Усилить видеонаблюдение: г. Кульсары (7-й аул), р-н Жайык мкр. Атырау.\n\n' +
+'ПРОГНОЗ НА 7 ДНЕЙ\n' +
+'Снижение общей преступности на 10-15% (предновогодний период). Повышенный риск:\n' +
+'мошенничество +20% в праздничные дни, ДТП в ночное время.\n' +
+'Усилить патрулирование 25-31 декабря.';
+}
+function renderReport(txt, fname) {
+  var displayFile = fname || (rHistory.length ? rHistory[0].file : 'Отчет');
+  var rows = '';
+  for (var i = 0; i < CASES.length; i++) {
+    var c = CASES[i];
+    rows += '<tr><td class="mono f11" style="color:var(--acc)">' + c.id + '</td><td class="f12">' + c.district + '</td><td><span class="b bb">' + c.law + '</span></td><td style="font-weight:600;font-size:12px">' + c.title + '</td><td class="f12 t2">' + c.victim.substring(0,28) + '</td><td><span class="b ' + SEVB[c.sev] + '">' + SEVL[c.sev] + '</span></td></tr>';
+  }
+  var aiStyle = 'width:34px;height:34px;background:linear-gradient(135deg,#6c63ff,#a855f7);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0';
+  document.getElementById('rtrBody').innerHTML =
+    '<div class="sgrid mb12">' +
+      '<div class="scard"><div class="slbl">Файл отчёта</div><div style="font-size:11px;font-weight:700;word-break:break-all">' + displayFile + '</div></div>' +
+      '<div class="scard r"><div class="slbl">Дел</div><div class="sval" style="color:var(--red)">11</div><div class="schg cdn">-59.3% к 2024</div></div>' +
+      '<div class="scard o"><div class="slbl">Ущерб</div><div class="sval" style="color:var(--org)">84M тг</div></div>' +
+      '<div class="scard g"><div class="slbl">Риск</div><div class="sval" style="color:var(--org)">Средний</div></div>' +
+    '</div>' +
+    '<div class="card mb12">' +
+      '<div class="flex ac g12 mb12" style="margin-bottom:14px">' +
+        '<div style="' + aiStyle + '">&#129302;</div>' +
+        '<div><div style="font-size:15px;font-weight:800">ИИ-анализ отчёта</div><div class="f12 t2">' + displayFile + '</div></div>' +
+        '<div class="rp rm" style="margin-left:auto">Средний риск</div>' +
+      '</div>' +
+      '<div style="font-size:13px;line-height:1.9;white-space:pre-wrap;background:var(--sur2);border:1px solid var(--bdr);border-radius:9px;padding:16px">' + txt + '</div>' +
+    '</div>' +
+    '<div class="card"><div class="ctitle">Зарегистрированные дела</div><div class="tw"><table><thead><tr><th>ЕРДР</th><th>Район</th><th>Статья</th><th>Дело</th><th>Потерпевший</th><th>Тяжесть</th></tr></thead><tbody>' + rows + '</tbody></table></div></div>';
+}
+
+// =====================
+// CHARTS
+// =====================
+var chartsInited = false;
+var adminChart = null;
+function initCharts() {
+  if (chartsInited) return;
+  chartsInited = true;
+  var GR = 'rgba(0,0,0,.06)';
+  var TK = {color:'#8BA5BC', font:{size:11}};
+  new Chart(document.getElementById('cTypes'), {type:'doughnut', data:{labels:['Мошенничество','ДТП','Насилие','Кражи','Наркотики','Прочее'], datasets:[{data:[4,2,2,2,1,1], backgroundColor:['#DC2626','#059669','#7C3AED','#D97706','#0077CC','#9CA3AF'], borderWidth:2, borderColor:'#fff'}]}, options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'right', labels:{color:'#4A6280', font:{size:11}, padding:8}}}}});
+  new Chart(document.getElementById('cTrend'), {type:'line', data:{labels:['Авг','Сен','Окт','Ноя','Дек'], datasets:[{label:'2025', data:[22,19,17,14,11], borderColor:'#0077CC', backgroundColor:'rgba(0,119,204,.08)', fill:true, tension:.4, pointRadius:4, pointBackgroundColor:'#0077CC'},{label:'2024', data:[28,26,30,25,27], borderColor:'#D97706', fill:false, tension:.4, pointRadius:4, borderDash:[5,4]}]}, options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{labels:{color:'#4A6280', font:{size:11}}}}, scales:{x:{ticks:TK, grid:{color:GR}}, y:{ticks:TK, grid:{color:GR}}}}});
+  new Chart(document.getElementById('cForecast'), {type:'bar', data:{labels:['Атырау','Жылыой','Макат','Кзылкогин','Индер'], datasets:[{label:'Прогноз (7 дн.)', data:[5,2,1,1,0], backgroundColor:['rgba(220,38,38,.72)','rgba(217,119,6,.72)','rgba(217,119,6,.5)','rgba(5,150,105,.6)','rgba(5,150,105,.4)'], borderRadius:6, maxBarThickness:50}]}, options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{labels:{color:'#4A6280', font:{size:11}}}}, scales:{x:{ticks:TK, grid:{display:false}}, y:{ticks:{color:'#8BA5BC', font:{size:11}, stepSize:1}, grid:{color:GR}, min:0, max:6}}}});
+  updateAdminChart();
+}
+function updateAdminChart() {
+  var ctx = document.getElementById('cApps');
+  if (!ctx) return;
+  if (adminChart) adminChart.destroy();
+  var cn = {new:0, review:0, done:0, reject:0};
+  for (var i = 0; i < APPS.length; i++) cn[APPS[i].status] = (cn[APPS[i].status] || 0) + 1;
+  adminChart = new Chart(ctx, {type:'doughnut', data:{labels:['Новые','На рассм.','Выполнены','Отклонены'], datasets:[{data:[cn.new, cn.review, cn.done, cn.reject], backgroundColor:['#0077CC','#D97706','#059669','#DC2626'], borderWidth:2, borderColor:'#fff'}]}, options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom', labels:{color:'#4A6280', font:{size:11}, padding:8}}}}});
+}
+
+// =====================
+// NAV + TABS + MODAL
+// =====================
+function gp(id) {
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.nbtn').forEach(function(b){ b.classList.remove('active'); });
+  var pg = document.getElementById('p-' + id);
+  if (pg) pg.classList.add('active');
+  var nb = document.getElementById('nb-' + id);
+  if (nb) nb.classList.add('active');
+  if (id === 'map') setTimeout(function(){ initMap(); renderHotspots(); }, 120);
+  if (id === 'cameras') setTimeout(function(){ initCamMap(); }, 120);
+  if (id === 'admin') { updateAdminCounts(); setTimeout(updateAdminChart, 200); }
+}
+function switchRTab(tid, btn) {
+  var panels = ['rtu','rtr','rth'];
+  for (var i=0; i<panels.length; i++) {
+    var el = document.getElementById(panels[i]);
+    if (el) el.style.display = (panels[i] === tid) ? 'block' : 'none';
+  }
+  document.querySelectorAll('#p-reports .tab').forEach(function(b){ b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+}
+function switchATab(tid, btn) {
+  var panels = ['atlist','atnew'];
+  for (var i=0; i<panels.length; i++) {
+    var el = document.getElementById(panels[i]);
+    if (el) el.style.display = (panels[i] === tid) ? 'block' : 'none';
+  }
+  document.querySelectorAll('#p-applications .tab').forEach(function(b){ b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+}
+function stab(btn, tid) {
+  // Deactivate sibling tabs
+  var te = btn.closest('.tabs');
+  if (te) {
+    te.querySelectorAll('.tab').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+  }
+  // Find all sibling panels by common prefix
+  var parts = tid.split('-');
+  var prefix = parts[0]; // e.g. "rtu" -> "rt", "atlist" -> "at"
+  // Try 2-char prefix first
+  var base2 = tid.substring(0, 2);
+  document.querySelectorAll('[id^="' + base2 + '"]').forEach(function(el){
+    if (el.classList && !el.classList.contains('tab') && !el.classList.contains('tabs')) {
+      el.style.display = 'none';
+    }
+  });
+  var panel = document.getElementById(tid);
+  if (panel) panel.style.display = 'block';
+}
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  if (id === 'camModal') {
+    var s = document.getElementById('camStream');
+    if (s) s.innerHTML = '';
+  }
+}
+document.addEventListener('click', function(e) {
+  document.querySelectorAll('.ov.open').forEach(function(o) {
+    if (e.target === o) {
+      o.classList.remove('open');
+      var s = o.querySelector('#camStream');
+      if (s) s.innerHTML = '';
+    }
+  });
+});
+</script>
+</body>
+</html>

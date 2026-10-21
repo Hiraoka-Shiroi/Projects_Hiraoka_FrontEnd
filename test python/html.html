@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>You hacked</title>
+</head>
+<form action="/submit" method="post">
+    <label for="name">Имя Шлюхи:</label>
+    <input type="text" id="name" name="name" placeholder="Введите имя">
+
+    <label for="email">Email Шлюхи:</label>
+    <input type="email" id="email" name="email" placeholder="Введите email">
+
+    <label for="message">Сообщение: "пиши все свои данные и номер телефона"</label>
+    <textarea id="message" name="message" rows="4" placeholder="Введите сообщение"></textarea>
+
+    <label for="choice">Выбери опцию:</label>
+    <select id="choice" name="choice">
+        <option value="a">Мамкина шлюха</option>
+        <option value="b">Конченая проститутка</option>
+    </select>
+
+    <label><input type="checkbox" name="agree"> Я согласен чтобы меня задоксили!</label>
+
+    <button type="submit">Отправить все данные Хираоке</button>
+</form>
+<script>
+    document.querySelector("form").addEventListener("submit", function (event) {
+        event.preventDefault(); // Не отправлять форму
+
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const message = document.getElementById("message").value;
+
+        if (name === "" || email === "" || message === "") {
+            alert("Пожалуйста, заполните все поля!");
+        } else {
+            alert(`Спасибо, ${name}! Мы получили ваше сообщение.`);
+        }
+    });
+</script>
+<style>
+    form {
+        width: 300px;
+        margin: auto;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background: #64a557;
+    }
+
+    label {
+        display: block;
+        margin: 10px 0 5px;
+        font-weight: bold;
+    }
+
+    input,
+    textarea,
+    select {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+</style>
+
+</html>
