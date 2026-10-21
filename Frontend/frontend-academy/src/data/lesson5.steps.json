@@ -1,0 +1,87 @@
+[
+  {
+    "id": "and",
+    "title": "1. И — нужны оба условия",
+    "goal": "Прочитать &&.",
+    "text": "Для && должны выполниться оба условия. Есть книга, но нет ручки — письменное упражнение пока не начать.",
+    "code": "const hasBook = true;\nconst hasPen = false;\nconst canStart = hasBook && hasPen;\nconsole.log(canStart);\nconsole.log(true && true);\nconsole.log(false && true);",
+    "lines": [
+      "Строки 1–2 — два факта.",
+      "Строка 3 соединяет их через И.",
+      "Строки 4–6 показывают результаты."
+    ],
+    "tryIt": "Попробуй: поменяй hasPen на true. До запуска предскажи каждую строку.",
+    "question": "Почему true && false даёт false?",
+    "demo": "and",
+    "result": "false\ntrue\nfalse",
+    "trace": [
+      "Есть книга, но нет ручки.",
+      "canStart получает false.",
+      "Последние строки проверяют другие сочетания."
+    ]
+  },
+  {
+    "id": "or",
+    "title": "2. ИЛИ — хватит одного способа",
+    "goal": "Прочитать ||.",
+    "text": "По билету или по списку: достаточно любого подтверждения. Если есть оба, || тоже даст true.",
+    "code": "const hasTicket = false;\nconst isOnList = true;\nconst canEnter = hasTicket || isOnList;\nconsole.log(canEnter);\nconsole.log(false || false);\nconsole.log(true || true);",
+    "lines": [
+      "Строки 1–2 — способы входа.",
+      "Строка 3 использует правило ИЛИ.",
+      "Последние строки проверяют крайние случаи."
+    ],
+    "tryIt": "Попробуй: поставь обе переменные в false. Предскажи вывод и проверь.",
+    "question": "Нужны ли для || оба условия true?",
+    "demo": "or",
+    "result": "true\nfalse\ntrue",
+    "trace": [
+      "В списке есть запись, поэтому canEnter=true.",
+      "Два false дают false.",
+      "Два true тоже дают true."
+    ]
+  },
+  {
+    "id": "not",
+    "title": "3. НЕ меняет смысл проверки",
+    "goal": "Применить !.",
+    "text": "isClosed означает «закрыто». !isClosed — «не закрыто». Результат противоположный, но исходная переменная сама не меняется.",
+    "code": "const isClosed = false;\nconst isOpen = !isClosed;\nconsole.log(isClosed);\nconsole.log(isOpen);\nconsole.log(!true);\nconsole.log(!false);",
+    "lines": [
+      "Строка 1 — исходное состояние.",
+      "Строка 2 получает противоположность.",
+      "Вывод показывает оба состояния."
+    ],
+    "tryIt": "Попробуй: поставь isClosed=true. Предскажи первые две строки.",
+    "question": "Изменится ли isClosed после !isClosed?",
+    "demo": "not",
+    "result": "false\ntrue\nfalse\ntrue",
+    "trace": [
+      "isClosed остаётся false.",
+      "isOpen получает true.",
+      "!true даёт false, !false даёт true."
+    ]
+  },
+  {
+    "id": "group",
+    "title": "4. Объедини правила со скобками",
+    "goal": "Отделить альтернативу от обязательной проверки.",
+    "text": "Клуб ИЛИ купон — одна группа. Выходной день — обязательное условие для всей группы. Скобки помогают увидеть правило сразу.",
+    "code": "const isMember = false;\nconst hasCoupon = true;\nconst isWeekend = false;\nconst hasDiscount = (isMember || hasCoupon) && isWeekend;\nconsole.log(hasDiscount);\nconsole.log(isMember || hasCoupon);",
+    "lines": [
+      "Скобки объединяют два способа.",
+      "&& добавляет обязательный день.",
+      "Последняя строка проверяет только группу."
+    ],
+    "tryIt": "Попробуй: поменяй только isWeekend. Предскажи, какая строка изменится.",
+    "question": "Почему одного купона здесь недостаточно?",
+    "demo": "group",
+    "result": "false\ntrue",
+    "trace": [
+      "false || true даёт true.",
+      "true && false даёт false: сегодня не выходной.",
+      "Отдельная первая группа даёт true."
+    ]
+  }
+]
+

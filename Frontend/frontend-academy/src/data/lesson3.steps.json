@@ -1,0 +1,87 @@
+[
+  {
+    "id": "typeof",
+    "title": "1. Один вид в терминале, разные типы",
+    "goal": "Проверить значение через typeof.",
+    "text": "21 и \"21\" могут выглядеть одинаково в терминале, но первое — number, второе — string. typeof возвращает название типа в нижнем регистре. Boolean значение true пишется без кавычек.",
+    "code": "const numericValue = 21;\nconst textValue = \"21\";\nconst studying = true;\nconsole.log(typeof numericValue);\nconsole.log(typeof textValue);\nconsole.log(typeof studying);",
+    "lines": [
+      "Строки 1–3 создают число, строку и boolean.",
+      "Строки 4–6 показывают их типы через console.log(typeof ...)."
+    ],
+    "tryIt": "Создай значения false и \"false\". Предскажи и проверь оба типа.",
+    "question": "Почему строка \"21\" не имеет тип number?",
+    "demo": "types-typeof",
+    "result": "number\nstring\nboolean",
+    "trace": [
+      "Числовой литерал получает тип number.",
+      "Текст в кавычках имеет тип string.",
+      "true без кавычек имеет тип boolean."
+    ]
+  },
+  {
+    "id": "absence",
+    "title": "2. Отсутствие и неудачный расчёт",
+    "goal": "Различить undefined, null и NaN.",
+    "text": "let без начального значения содержит undefined. null — явная отметка отсутствия. У typeof null исторически результат object. NaN остаётся типом number, хотя не является пригодным числовым ответом.",
+    "code": "let waiting;\nconst empty = null;\nconst failed = 0 / 0;\nconsole.log(typeof waiting);\nconsole.log(typeof empty);\nconsole.log(typeof failed);",
+    "lines": [
+      "Строка 1 не присваивает начальное значение; строка 2 явно задаёт null.",
+      "Строка 3 получает NaN.",
+      "Строки 4–6 показывают типы, а не сами значения."
+    ],
+    "tryIt": "Добавь отдельный вывод waiting, empty и failed. До запуска назови сами значения, а не их typeof.",
+    "question": "Почему тип number у failed не доказывает, что расчёт пригоден?",
+    "demo": "types-absence",
+    "result": "undefined\nobject\nnumber",
+    "trace": [
+      "waiting содержит undefined.",
+      "typeof null возвращает историческое имя object.",
+      "0 / 0 даёт NaN, его typeof — number."
+    ]
+  },
+  {
+    "id": "coercion",
+    "title": "3. + может соединять строки",
+    "goal": "Увидеть неявное преобразование.",
+    "text": "При строковом операнде + соединяет текст. У - такой операции нет: строка с числом преобразуется в число. Неподходящий текст при вычитании даёт NaN.",
+    "code": "const enteredAmount = \"10\";\nconst addedAmount = 5;\nconsole.log(enteredAmount + addedAmount);\nconsole.log(enteredAmount - addedAmount);\nconsole.log(\"текст\" - addedAmount);",
+    "lines": [
+      "Строка 1 хранит строку, строка 2 — число.",
+      "Строка 3 соединяет строки; строка 4 вычитает после преобразования.",
+      "Строка 5 не может получить число из текста."
+    ],
+    "tryIt": "Предскажи \"4\" + 3 и \"4\" - 3, затем проверь также typeof обоих результатов.",
+    "question": "Почему плюс и минус дают разное поведение с \"10\"?",
+    "demo": "types-coercion",
+    "result": "105\n5\nNaN",
+    "trace": [
+      "+ соединяет текст 10 и 5 в 105.",
+      "- использует числовое значение строки 10 и получает 5.",
+      "Строка текст не преобразуется в число; результат NaN."
+    ]
+  },
+  {
+    "id": "conversion",
+    "title": "4. Преобразование можно сделать явным",
+    "goal": "Выбрать Number, String или Boolean.",
+    "text": "Number(...) преобразует в число, String(...) — в строку, Boolean(...) — в true/false. Это готовые встроенные функции. Boolean не читает смысл слов: непустая строка \"false\" даёт true.",
+    "code": "const price = Number(\"12\");\nconst label = String(12);\nconsole.log(price + 3);\nconsole.log(typeof label);\nconsole.log(Boolean(0));\nconsole.log(Boolean(\"false\"));",
+    "lines": [
+      "Строка 1 получает число, строка 2 — текст.",
+      "Строка 3 складывает числа; строка 4 показывает тип подписи.",
+      "Строки 5–6 показывают Boolean для нуля и непустой строки."
+    ],
+    "tryIt": "Проверь Number(\"\") и Number(\"текст\"). Объясни, почему преобразование не подтверждает правильный ввод.",
+    "question": "Почему Boolean(\"false\") отличается от Boolean(0)?",
+    "demo": "types-conversion",
+    "result": "15\nstring\nfalse\ntrue",
+    "trace": [
+      "Number даёт число 12; прибавляем 3.",
+      "String даёт текст с типом string.",
+      "0 преобразуется в false.",
+      "Непустая строка false преобразуется в true."
+    ]
+  }
+]
+

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>SafeCity Atyrau</title>
+<title>SafeCity Atyrau — демо</title>
 <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -263,6 +263,7 @@ tr.click:hover td{background:var(--acc-l);cursor:pointer}
     </div>
     <div class="lerr" id="lerr"></div>
     <button class="lbtn" onclick="doLogin()">&#1042;&#1086;&#1081;&#1090;&#1080; &#1074; &#1089;&#1080;&#1089;&#1090;&#1077;&#1084;&#1091;</button>
+    <div class="lhint">Учебный демо-прототип. Вход и данные работают только в этой вкладке.</div>
     <div class="lhint">admin / admin123 &nbsp;&#183;&nbsp; sotrudnik / sotrud123</div>
   </div>
 </div>
@@ -272,7 +273,7 @@ tr.click:hover td{background:var(--acc-l);cursor:pointer}
   <header class="hdr">
     <div class="logo">
       <div class="logo-ico">&#128737;</div>
-      <div><div class="logo-nm">SafeCity Atyrau</div><div class="logo-sb">&#1040;&#1085;&#1072;&#1083;&#1080;&#1090;&#1080;&#1095;&#1077;&#1089;&#1082;&#1072;&#1103; &#1087;&#1083;&#1072;&#1090;&#1092;&#1086;&#1088;&#1084;&#1072;</div></div>
+      <div><div class="logo-nm">SafeCity Atyrau</div><div class="logo-sb">Демо · данные, ИИ и камеры — примеры</div></div>
     </div>
     <nav class="hnav" id="mainnav"></nav>
     <div class="hright">
@@ -396,7 +397,8 @@ tr.click:hover td{background:var(--acc-l);cursor:pointer}
               <div class="f12 t2">RTF &middot; PDF &middot; DOCX &middot; TXT</div>
               <div id="rfname" style="margin-top:6px;font-size:13px;color:var(--grn);font-weight:600"></div>
             </div>
-            <button class="btn bpri w100" style="margin-top:10px;opacity:.5" id="analyzebtn" onclick="runAnalysis()" disabled>&#129302; &#1040;&#1085;&#1072;&#1083;&#1080;&#1079;&#1080;&#1088;&#1086;&#1074;&#1072;&#1090;&#1100; &#1089; &#1048;&#1048;</button>
+            <p class="f12 t2" style="margin-top:10px">Демонстрация отчёта: используется только имя файла. Содержимое не читается и не отправляется; результат — заранее подготовленный пример.</p>
+            <button class="btn bpri w100" style="margin-top:10px;opacity:.5" id="analyzebtn" onclick="runAnalysis()" disabled>&#129302; Показать демо-отчёт</button>
           </div>
         </div>
         <div class="card">
@@ -720,6 +722,12 @@ var CU = null;
 // =====================
 // AUTH
 // =====================
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, function(character) {
+    return {'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[character];
+  });
+}
+
 function selR(r) {
   document.getElementById('aa').classList.toggle('sel', r === 'admin');
   document.getElementById('ae').classList.toggle('sel', r === 'employee');
@@ -824,7 +832,7 @@ function renderMapMarkers(f) {
       var a = APPS[i];
       var j = function(){ return (Math.random()-.5)*.006; };
       var m = L.marker([a.lat+j(), a.lng+j()], {icon: makeIcon(a.fromMap ? TC.pin : TC.app, a.fromMap)});
-      m.bindPopup('<b>' + (a.fromMap ? '&#128204; ' : '&#128221; ') + a.id + '</b><br><small>' + a.district + ', ' + a.address + '</small><br><small>' + a.desc.substring(0,70) + '...</small>');
+      m.bindPopup('<b>' + (a.fromMap ? '&#128204; ' : '&#128221; ') + escapeHtml(a.id) + '</b><br><small>' + escapeHtml(a.district) + ', ' + escapeHtml(a.address) + '</small><br><small>' + escapeHtml(a.desc.substring(0,70)) + '...</small>');
       m.addTo(mapObj);
       allMarkers.push(m);
     }
@@ -1188,11 +1196,11 @@ function renderApps() {
     var a = APPS[i];
     html += '<div class="citem">';
     html += '<div class="flex ac jb mb8"><div class="flex ac g8"><span style="font-size:18px">' + (a.fromMap ? '&#128204;' : (TI[a.type]||'&#128203;')) + '</span>';
-    html += '<div><div class="mono f11" style="color:var(--acc)">' + a.id + (a.fromMap ? ' <span style="background:var(--red-l);color:var(--red);font-size:10px;padding:1px 5px;border-radius:4px">с карты</span>' : '') + '</div>';
-    html += '<div style="font-size:13px;font-weight:700">' + TL[a.type] + ' - ' + a.district + '</div></div></div>';
+    html += '<div><div class="mono f11" style="color:var(--acc)">' + escapeHtml(a.id) + (a.fromMap ? ' <span style="background:var(--red-l);color:var(--red);font-size:10px;padding:1px 5px;border-radius:4px">с карты</span>' : '') + '</div>';
+    html += '<div style="font-size:13px;font-weight:700">' + TL[a.type] + ' - ' + escapeHtml(a.district) + '</div></div></div>';
     html += '<span class="b ' + SB[a.status] + '">' + SL[a.status] + '</span></div>';
-    html += '<div class="f12 t2 mb8">&#128205; ' + a.address + ' &nbsp;&#183;&nbsp; &#128100; ' + a.employee + ' &nbsp;&#183;&nbsp; &#128336; ' + a.date + '</div>';
-    html += '<div style="font-size:12px;color:var(--txt2);margin-bottom:8px">' + a.desc.substring(0,100) + (a.desc.length>100?'...':'') + '</div>';
+    html += '<div class="f12 t2 mb8">&#128205; ' + escapeHtml(a.address) + ' &nbsp;&#183;&nbsp; &#128100; ' + escapeHtml(a.employee) + ' &nbsp;&#183;&nbsp; &#128336; ' + escapeHtml(a.date) + '</div>';
+    html += '<div style="font-size:12px;color:var(--txt2);margin-bottom:8px">' + escapeHtml(a.desc.substring(0,100)) + (a.desc.length>100?'...':'') + '</div>';
     html += '<div class="flex g8" style="flex-wrap:wrap">';
     html += '<button class="btn bout bsm" onclick="openAppModal(' + i + ')">&#128203; Подробнее</button>';
     html += '<button class="btn bout bsm" onclick="flyToApp(' + i + ')">&#128506; На карте</button>';
@@ -1215,11 +1223,11 @@ function openAppModal(i) {
   html += '<span class="b ' + SB[a.status] + '">' + SL[a.status] + '</span>';
   if (a.fromMap) html += '<span class="b br">&#128204; С карты</span>';
   html += '</div>';
-  html += '<div class="igrid"><div><div class="ilbl">Район</div><div class="ival">' + a.district + '</div></div><div><div class="ilbl">Адрес</div><div class="ival">' + a.address + '</div></div></div>';
-  html += '<div class="igrid"><div><div class="ilbl">Статья УК</div><div class="ival">' + (a.law||'Уточняется') + '</div></div><div><div class="ilbl">Сотрудник</div><div class="ival">' + a.employee + '</div></div></div>';
+  html += '<div class="igrid"><div><div class="ilbl">Район</div><div class="ival">' + escapeHtml(a.district) + '</div></div><div><div class="ilbl">Адрес</div><div class="ival">' + escapeHtml(a.address) + '</div></div></div>';
+  html += '<div class="igrid"><div><div class="ilbl">Статья УК</div><div class="ival">' + escapeHtml(a.law||'Уточняется') + '</div></div><div><div class="ilbl">Сотрудник</div><div class="ival">' + escapeHtml(a.employee) + '</div></div></div>';
   html += '<div class="ilbl">Описание</div>';
-  html += '<div style="font-size:13px;line-height:1.8;background:var(--sur2);border:1px solid var(--bdr);border-radius:7px;padding:11px;margin-bottom:10px">' + a.desc + '</div>';
-  html += '<div class="airec mb10">&#129302; Точка нанесена на карту: ' + a.district + ', ' + a.address + '</div>';
+  html += '<div style="font-size:13px;line-height:1.8;background:var(--sur2);border:1px solid var(--bdr);border-radius:7px;padding:11px;margin-bottom:10px">' + escapeHtml(a.desc) + '</div>';
+  html += '<div class="airec mb10">&#129302; Точка нанесена на карту: ' + escapeHtml(a.district) + ', ' + escapeHtml(a.address) + '</div>';
   html += '<div class="flex g8" style="flex-wrap:wrap">';
   html += '<button class="btn bpri" onclick="closeModal(\'appModal\');flyToApp(' + i + ')">&#128506; На карте</button>';
   if (isA && (a.status === 'new' || a.status === 'review')) {
@@ -1336,32 +1344,41 @@ function renderVulns() {
 var rLoaded = false;
 var rFileName = '';
 var rHistory = [];
+var rBusy = false;
 
 function onFileSelect(inp) {
-  if (inp.files && inp.files[0]) {
-    rFileName = inp.files[0].name;
-    document.getElementById('rfname').textContent = inp.files[0].name;
-    rLoaded = true;
-    var btn = document.getElementById('analyzebtn');
-    if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
-  }
+  if (rBusy) return;
+  rFileName = inp.files && inp.files[0] ? inp.files[0].name : '';
+  rLoaded = Boolean(rFileName);
+  document.getElementById('rfname').textContent = rFileName;
+  var btn = document.getElementById('analyzebtn');
+  if (btn) { btn.disabled = !rLoaded; btn.style.opacity = rLoaded ? '1' : '.5'; }
 }
 function runAnalysis() {
+  if (rBusy) return;
   if (!rLoaded || !rFileName) { alert('Сначала выберите файл отчёта'); return; }
+  var selectedFileName = rFileName;
+  rBusy = true;
+  var btn = document.getElementById('analyzebtn');
+  if (btn) { btn.disabled = true; btn.style.opacity = '.5'; }
+  document.getElementById('rfile').disabled = true;
   switchRTab('rtr', document.getElementById('rtab1'));
-  document.getElementById('rtrBody').innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:40px;justify-content:center;color:var(--txt2)"><div class="spin"></div>ИИ анализирует файл...</div>';
+  document.getElementById('rtrBody').innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:40px;justify-content:center;color:var(--txt2)"><div class="spin"></div>Подготовка демо-отчёта...</div>';
   setTimeout(function(){
-    var txt = getAnalysisText();
-    renderReport(txt);
-    var now = new Date().toLocaleString('ru', {hour12:false});
-    rHistory.unshift({date:now, file:rFileName, cases:11, risk:'med', txt:txt});
-    renderHistory();
-    rLoaded = false;
-    rFileName = '';
-    document.getElementById('rfname').textContent = '';
-    document.getElementById('rfile').value = '';
-    var btn = document.getElementById('analyzebtn');
-    if (btn) { btn.disabled = true; btn.style.opacity = '.5'; }
+    try {
+      var txt = getAnalysisText();
+      renderReport(txt, selectedFileName);
+      var now = new Date().toLocaleString('ru', {hour12:false});
+      rHistory.unshift({date:now, file:selectedFileName, cases:11, risk:'med', txt:txt});
+      renderHistory();
+    } finally {
+      rBusy = false;
+      rLoaded = false;
+      rFileName = '';
+      document.getElementById('rfname').textContent = '';
+      document.getElementById('rfile').value = '';
+      document.getElementById('rfile').disabled = false;
+    }
   }, 1200);
 }
 function renderHistory() {
@@ -1379,7 +1396,7 @@ function renderHistory() {
     var rTxt = h.risk === 'high' ? 'Высокий' : h.risk === 'med' ? 'Средний' : 'Низкий';
     html += '<tr>';
     html += '<td class="f12">' + h.date + '</td>';
-    html += '<td class="mono f11" style="color:var(--acc)">' + h.file + '</td>';
+    html += '<td class="mono f11" style="color:var(--acc)">' + escapeHtml(h.file) + '</td>';
     html += '<td style="font-weight:700">' + h.cases + '</td>';
     html += '<td><span class="b ' + rCls + '">' + rTxt + '</span></td>';
     html += '<td><button class="btn bout bsm" onclick="viewHistEntry(' + i + ')">Просмотр</button></td>';
@@ -1425,7 +1442,7 @@ function getAnalysisText() {
 'Усилить патрулирование 25-31 декабря.';
 }
 function renderReport(txt, fname) {
-  var displayFile = fname || (rHistory.length ? rHistory[0].file : 'Отчет');
+  var displayFile = escapeHtml(fname || (rHistory.length ? rHistory[0].file : 'Отчет'));
   var rows = '';
   for (var i = 0; i < CASES.length; i++) {
     var c = CASES[i];
@@ -1442,10 +1459,10 @@ function renderReport(txt, fname) {
     '<div class="card mb12">' +
       '<div class="flex ac g12 mb12" style="margin-bottom:14px">' +
         '<div style="' + aiStyle + '">&#129302;</div>' +
-        '<div><div style="font-size:15px;font-weight:800">ИИ-анализ отчёта</div><div class="f12 t2">' + displayFile + '</div></div>' +
+        '<div><div style="font-size:15px;font-weight:800">Демо-отчёт · подготовленный пример</div><div class="f12 t2">' + displayFile + '</div></div>' +
         '<div class="rp rm" style="margin-left:auto">Средний риск</div>' +
       '</div>' +
-      '<div style="font-size:13px;line-height:1.9;white-space:pre-wrap;background:var(--sur2);border:1px solid var(--bdr);border-radius:9px;padding:16px">' + txt + '</div>' +
+      '<div style="font-size:13px;line-height:1.9;white-space:pre-wrap;background:var(--sur2);border:1px solid var(--bdr);border-radius:9px;padding:16px">' + escapeHtml(txt) + '</div>' +
     '</div>' +
     '<div class="card"><div class="ctitle">Зарегистрированные дела</div><div class="tw"><table><thead><tr><th>ЕРДР</th><th>Район</th><th>Статья</th><th>Дело</th><th>Потерпевший</th><th>Тяжесть</th></tr></thead><tbody>' + rows + '</tbody></table></div></div>';
 }

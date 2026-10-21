@@ -6,5 +6,5 @@ playwright-report/
 .env*
 !.env.example
 
-data/
-academy.test-data/
+/data/
+/academy.test-data/
