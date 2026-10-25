@@ -1,0 +1,48 @@
+
+/* Общая конфигурация страницы */
+body {
+    background-color: grey;
+    font-family: Arial, sans-serif;
+}
+
+/* Стили для p */
+.main-p {
+    color: blue;
+    font-size: 20px;
+    text-align: center;
+}
+
+/* Толстый текст */
+#bold-text {
+    font-weight: bold;
+    color: lightblue;
+}
+
+/* Стиль для h4 */
+h4 {
+    color: orange;
+    font-size: 18px;
+    text-align: center;
+}
+
+/* Контейнеры */
+.background-color {
+    background-color: lightgreen;
+    padding: 10px;
+    border-radius: 5px;
+}
+.background-image {
+    background-image: url(https://w0.peakpx.com/wallpaper/983/142/HD-wallpaper-neko-girl-anime-arts-kawaii.jpg);
+    width: 300px;
+    height: 200px;
+    border-radius: 10px;
+    border: 2px solid black;
+    margin: 10px 0;
+}
+.main-overflow {
+    width: 200px;
+    height: 100px;
+    overflow: scroll;
+    border: 1px solid black;
+    margin: 10px 0;
+}

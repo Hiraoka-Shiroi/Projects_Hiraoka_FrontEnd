@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Селекторы CSS</title>
+    <!-- Подключил стили -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Заголовки -->
+    <h1 id="main-title">Главный заголовок (ID)</h1>
+    <h2>Подзаголовок (просто тег h2)</h2>
+
+    <!-- Абзацы -->
+    <p>Просто абзац с синим цветом</p>
+    <p class="bold-text">Абзац жирный (по классу)</p>
+    <p class="bold-text">Ещё жирный абзац</p>
+
+    <!-- Список -->
+    <ul>
+        <li>Обычный элемент списка</li>
+        <li class="bold-text">Жирный элемент списка</li>
+        <li id="special-li">Элемент с ID</li>
+    </ul>
+
+    <!-- Тут проверяем приоритет -->
+    <h1 class="green-title" id="priority-title">
+        Проверка приоритета
+    </h1>
+
+    <p>
+        Приоритет:<br>  
+        1) Встроенные стили style="..."<br> 
+        2) ID (#id)<br>
+        3) Классы (.class)<br>  
+        4) Теги (h1, p и т.д.)
+    </p>
+
+</body>
+</html>

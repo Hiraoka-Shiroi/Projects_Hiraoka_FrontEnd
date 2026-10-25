@@ -1,0 +1,209 @@
+body {
+  background-color: lightslategray;
+  font-family: 'Courier New', Courier, monospace;
+}
+p {
+  color: white;
+  font-size: 18px;
+}
+
+/* Задание 1: Свойство 'display' */
+.container {
+  width: 700px;
+  height: 350px;
+  background-color: gray;
+  border-radius: 10px;
+  margin: 10px;
+  padding: 10px;
+}
+
+.block {
+  display: block;
+  background-color: lightgray;
+  color: black;
+  padding: 15px;
+  margin: 10px;
+  border-radius: 5px;
+}
+
+.inline {
+  display: inline;
+  background-color: lightgray;
+  color: black;
+  padding: 15px;
+  margin: 10px;
+  border-radius: 5px;
+}
+.flex {
+  display: flex;
+  background-color: lightgray;
+  padding: 15px;
+  margin: 10px;
+  border-radius: 5px;
+}
+
+/* Задание 2: Flex-контейнер*/
+.flex-container {
+  background-color: azure;
+  display: flex;
+  margin: 20px;
+  padding: 10px;
+  border-radius: 7px;
+  height: 100px;
+  justify-content: space-between;
+  align-items: center;
+}
+.item {
+  font-size: 20px;
+  background-color: #111111;
+  color: antiquewhite;
+  display: flex;
+  justify-content: flex-end;
+  margin: 10px;
+  border-radius: 7px;
+}
+
+/* Задание 3: Свойства 'flex-direction', 'flex-wrap', 'flex-flow' */
+.flex-direction-column {
+  background-color: lightcoral;
+  display: flex;
+  flex-direction: column;
+  flex-flow: column wrap;
+  height: 200px;
+  margin: 20px;
+  padding: 10px;
+  border-radius: 7px;
+}
+.item-column {
+  font-size: 20px;
+  background-color: #111111;
+  color: antiquewhite;
+  display: flex;
+  justify-content: flex-end;
+  margin: 10px;
+  border-radius: 7px;
+}
+
+/* Задание 4: Выравнивание элементов */
+.align-items-container {
+  background-color: lightseagreen;
+  display: flex;
+  align-items: center;
+  height: 200px;
+  margin: 20px;
+  padding: 10px;
+  border-radius: 7px;
+  align-content: center;
+  flex-wrap: wrap;
+}
+.item-align {
+  font-size: 20px;
+  background-color: #111111;
+  color: antiquewhite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 10px;
+  border-radius: 7px;
+}
+/* Задание 5: Свойства 'flex-grow', 'flex-shrink', 'flex-basis' и сокращенное свойство 'flex' */
+.flex-grow-container {
+  background-color: lightpink;
+  display: flex;
+  height: 150px;
+  margin: 20px;
+  padding: 10px;
+  border-radius: 7px;
+}
+.item-grow {
+  font-size: 20px;
+  background-color: #111111;
+  color: antiquewhite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+  border-radius: 7px;
+}
+.item1 {
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 100px;
+}
+.item2 {
+  flex-grow: 2;
+  flex-shrink: 1;
+  flex-basis: 150px;
+}
+.item3 {
+  flex: 3 1 200px;
+}
+
+/* Задание 6: Практическое задание */
+.practice {
+  display: flex;
+  background-color: mediumaquamarine;
+  margin: 20px;
+  padding: 10px;
+  border-radius: 7px;
+  color: white;
+}
+
+.block1 {
+  flex: 0 0 50%;
+  background-color: #111111;
+  margin: 10px;
+  border-radius: 7px;
+}
+.block2 {
+  flex: 1;
+  background-color: #333333;
+  margin: 10px;
+  border-radius: 7px;
+}
+.block3 {
+  flex: 0 0 100px;
+  height: 100px;
+  background-color: #111111;
+  margin:10px;
+  border-radius: 7px;
+}
+
+/* Задание 7: Меню навигаций с выравниванием по центру */
+.menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: darkslateblue;
+  padding: 20px;
+  margin: 10px;
+  border-radius: 7px;
+  gap: 35px;
+  font-size: 40px;
+}
+.link {
+  background-color: #333333;
+}
+/* Задание 8: Галерея карточек */
+.card-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  background-color: darkorange;
+  padding: 20px;
+  margin: 10px;
+  border-radius: 7px;
+}
+.card {
+  background-color: #111111;
+  color: white;
+  width: 200px;
+  padding: 15px;
+  border-radius: 7px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1 1 300px;
+}

@@ -1,0 +1,61 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: lightslategray;
+}
+
+fieldset {
+    border: 2px solid black;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 20px;
+    background-color: lightgray;
+}
+
+legend {
+    font-weight: bold;
+    font-size: 25px;
+}
+
+/* Задание 1: Псевдоклассы hover и focus */
+.button:hover {
+    background-color: lightblue;
+}
+
+.text:focus {
+    background-color: lightgreen;
+}
+
+/* Задание 2: Псевдоклассы first-child и last-child */
+.first-child:first-child {
+    color: yellow;
+}
+
+.last-child:last-child {
+    color: white;
+}
+
+/* Задание 3: Применение псевдоклассов к разным элементам*/
+.link-color:hover {
+    color: orange;
+}
+
+.link-color:focus {
+    color: white;
+    background-color: lightcoral;
+}
+
+.nchild p:nth-of-type(odd) {
+    color: lightseagreen;
+}
+
+/* Задание 4: Комбинирование псевдоклассов */
+.combo-block p:first-child:hover {
+    color: purple;
+}
+
+.combo-block a:last-child:focus {
+    color: plum;
+    background-color: black;
+    padding: 3px;
+    border-radius: 3px;
+}

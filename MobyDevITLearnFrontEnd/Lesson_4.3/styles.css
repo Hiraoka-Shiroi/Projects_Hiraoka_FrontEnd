@@ -1,0 +1,93 @@
+body {
+    margin: 0;
+    background-color: lightslategray;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+}
+
+.greeting {
+    background-color: lightblue;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.positions-container {
+    position: relative;
+    height: 300vh;
+    border: 2px solid darkblue;
+    background-color: lightgray;
+    padding: 10px;
+}
+
+.position-static {
+    position: static;
+    background-color: lightgreen;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.position-relative {
+    position: relative;
+    bottom: 15px;
+    background-color: lightcoral;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.position-container2 {
+    position: relative;
+    height: 300px;
+    border: 2px solid rgb(0, 0, 0);
+    background-color: lightyellow;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+.position-absolute {
+    position: absolute;
+    top: 50px;
+    left: 10px;
+    background-color: coral;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.position-container-sticky {
+    position: relative;
+    height: 50vh;
+    border: 2px solid rgb(0, 0, 0);
+    background-color: lightpink;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+.position-sticky {
+    position: sticky;
+    top: 10px;
+    background-color: purple;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+p {
+    background-color: black;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.position-fixed {
+    position: fixed;
+    bottom: 30px;
+    right: 20px;
+    background-color: lightseagreen;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+}

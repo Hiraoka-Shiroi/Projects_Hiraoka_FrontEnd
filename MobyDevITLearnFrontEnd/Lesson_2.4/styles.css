@@ -1,0 +1,36 @@
+
+/* все абзацы будут синие */
+p {
+    color: blue;
+}
+
+/* класс - делает текст жирным */
+.bold-text {
+    font-weight: bold;
+}
+
+/* ID - красный текст */
+#main-title {
+    color: red;
+}
+
+/* ID для элемента списка */
+#special-li {
+    color: red;
+}
+
+/* приоритет проверка */
+/* тег h1 - синий */
+h1 {
+    color: blue;
+}
+
+/* класс - зелёный */
+.green-title {
+    color: green;
+}
+
+/* ID - красный, победит все выше */
+#priority-title {
+    color: red;
+}

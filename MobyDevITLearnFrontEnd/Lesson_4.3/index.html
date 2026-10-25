@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Позиционирование элементов</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <div class="greeting">
+        <h1>Привет! дорогие друзья!</h1>
+        <p>Это урок по позициям</p>
+        <p>Цель: Закрепить понимание различных значений свойства position и их применение для создания различных макетов веб-страницы.</p>
+        <p>Свойство position в CSS используется для определения метода позиционирования элементов на веб-странице. Существует пять значений свойства position: static, relative, absolute, fixed и sticky</p>
+    </div>
+
+    <div class="positions-container">
+        <p>Значение static и relative</p>
+
+        <div class="position-static">
+            Элементы с position: static являются обычными элементами потока, они располагаются в соответствии с нормальным потоком документа. Является значением по умолчанию для всех элементов HTML.
+        </div>
+
+        <div class="position-relative">
+            Элементы с position: relative располагаются в обычном потоке документа, но можно использовать свойства top, right, bottom и left для их смещения относительно их нормального положения.
+        </div>
+
+        <div class="position-container2">
+            <p>Значение absolute</p>
+            <div class="position-absolute">
+                Элементы с position: absolute позиционируются относительно ближайшего предка с position отличным от static. Если таких предков нет, элемент позиционируется относительно начального контейнера (обычно &lt;body&gt;).
+            </div>
+        </div>
+
+        <div class="position-container-sticky">
+            <p>Значение sticky</p>
+            <div class="position-sticky">
+                Элементы с position: sticky ведут себя как relative до тех пор, пока не достигнут заданной позиции при прокрутке, после чего ведут себя как fixed.
+            </div>
+        </div>
+    </div>
+
+    <div class="position-fixed">
+        Элементы с position: fixed позиционируются относительно окна браузера и остаются на месте при прокрутке страницы.
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,48 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: lightslategray;
+}
+
+/* Задание 2: Преобразование элементов */
+.display-block {
+    display: block;
+    background-color: lightblue;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 20px;
+}
+
+.display-inline {
+    display: inline;
+    background-color: lightcoral;
+    margin-right: 10px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+/* Задание 3: Работа с вложенными элементами */
+.container {
+    border: 5px solid rgb(255, 255, 255);
+    padding: 15px;
+    border-radius: 15px;
+    background-color: lightgreen;
+}
+
+.container p {
+    color: rgb(255, 0, 0);
+    font-weight: bold;
+}
+
+.container img {
+    display: block;
+    border: 5px solid rgb(255, 255, 255);
+    border-radius: 10px;
+}
+
+.container a {
+    display: block;
+    color: rgb(0, 60, 0);
+    text-decoration: none;
+    font-size: 18px;
+}
